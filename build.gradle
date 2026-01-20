@@ -1,7 +1,7 @@
 buildscript {
     repositories {
-        jcenter()
-        maven { url = "http://files.minecraftforge.net/maven" }
+        mavenCentral()
+        maven {url = "http://files.minecraftforge.net/maven"}
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
@@ -10,7 +10,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 
-version = "1.12.2-1.2.3"
+version = "1.12.2-1.2.4"
 group= "shadows.endertweaker"
 archivesBaseName = "EnderTweaker"
 
@@ -36,18 +36,17 @@ repositories {
 	maven {
 		url 'http://maven.blamejared.com'
 	}
+    maven {
+        url "https://cursemaven.com"
+    }
 }
 
 dependencies {
 	deobfCompile "mezz.jei:jei_1.12.2:+"
-    deobfCompile "mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.28-17"
-	deobfCompile("com.enderio:EnderIO:1.12.2-5.3.70"){
-        transitive = false
-    }
-	deobfCompile "com.enderio.core:EnderCore:1.12.2-0.5.76"
+    deobfCompile "curse.maven:the-one-probe-245211:2667280"
+    deobfCompile "curse.maven:enderio-5.3.72-64578:4674244"
+    deobfCompile "curse.maven:endercore-0.5.78-231868:4671384"
 	deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.+"
-	deobfCompile "info.loenwind.autoconfig:AutoConfig:+"
-	deobfCompile "info.loenwind.autosave:AutoSave:1.12.2-+"
 }
 
 processResources
