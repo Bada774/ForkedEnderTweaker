@@ -45,7 +45,7 @@ public class AlloySmelterRecipe {
         try {
             addRecipeMethod.invoke(null, lookup, recipe);
         } catch (Exception e) {
-            CraftTweakerAPI.logError("Error adding recipe to new lookup via reflection");
+            CraftTweakerAPI.logError("Error adding recipe to new lookup via reflection:\n", e);
             e.printStackTrace();
         }
     }
@@ -55,7 +55,7 @@ public class AlloySmelterRecipe {
             lookupField.set(AlloyRecipeManager.getInstance(), newLookup);
 
         } catch (Exception e) {
-            CraftTweakerAPI.logError("Failed to set Alloy Smelter recipe lookup: ", e);
+            CraftTweakerAPI.logError("Failed to set Alloy Smelter recipe lookup:\n", e);
             e.printStackTrace();
         }
     }
