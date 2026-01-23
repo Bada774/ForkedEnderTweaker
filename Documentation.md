@@ -14,13 +14,13 @@ Parameters:
  - float xp - The xp is granted from this recipe.  May not be negative.
  
 ##### Recipe Removal:
-`removeRecipe(IItemStack output)`  
+`removeRecipe(IItemStack... output)`  
 Parameters:
- - IItemStack output - The output of the recipe to remove.
+ - IItemStack... output - The outputs of the recipes to remove.
 
-`removeByInputs(IItemStack... input)`  
+`removeByInputs(IItemStack[]/IItemStack[][] input)`  
 Parameters:
- - IItemStack... input - The input of the recipe to remove.
+ - IItemStack[]/IItemStack[][] input - The inputs of the recipes to remove.
 ---
 ### Combustion Generator (mods.enderio.CombustionGen)
 
