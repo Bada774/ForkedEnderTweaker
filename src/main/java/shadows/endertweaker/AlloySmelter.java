@@ -130,7 +130,8 @@ public class AlloySmelter {
 				if (filterInput == null || filterInput.length == 0
 						|| filterInput.length > 3) {
 					CraftTweakerAPI.logError(
-							"Invalid Alloy Smelter recipe inputs: " + RecipeUtils.getDisplayString(filterInput));
+							"Invalid Alloy Smelter recipe inputs: " + ((filterInput == null) ? "null"
+									: RecipeUtils.getDisplayString(filterInput)));
 					continue;
 				}
 
