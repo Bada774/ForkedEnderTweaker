@@ -1,14 +1,14 @@
 [
 {
   "modid": "endertweaker",
-  "name": "EnderTweaker",
-  "description": "CraftTweaker + EnderIO",
+  "name": "BetterEnderTweaker",
+  "description": "CraftTweaker + EnderIO. A fork of the original EnderTweaker by Shadow_of_Fires, ensuring compatibility with the latest versions of EnderIO and introducing the ZenRecipeReloading mod support (hot reloading).",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
-  "authorList": ["Shadows_of_Fire"],
-  "credits": "",
+  "authorList": ["Bada774"],
+  "credits": "Original EnderTweaker by Shadows_of_Fire\nZenRecipeReloading by youyihj",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []

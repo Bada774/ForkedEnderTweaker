@@ -1,4 +1,4 @@
-package shadows.endertweaker.recipe;
+package bada774.endertweaker.recipe;
 
 import com.enderio.core.common.util.NNList;
 
@@ -11,14 +11,16 @@ import crazypants.enderio.base.recipe.RecipeOutput;
 
 public class ManyToOneRecipe extends Recipe {
 
-	public ManyToOneRecipe(RecipeOutput output, int energyRequired, RecipeBonusType bonusType, RecipeLevel level, IRecipeInput... input) {
+	public ManyToOneRecipe(RecipeOutput output, int energyRequired, RecipeBonusType bonusType, RecipeLevel level,
+			IRecipeInput... input) {
 		super(output, energyRequired, bonusType, level, input);
 	}
 
 	@Override
 	public boolean isInputForRecipe(NNList<MachineRecipeInput> machineInputs) {
 		IRecipeInput[] inputs = getInputs();
-		if (inputs.length != machineInputs.size()) return false;
+		if (inputs.length != machineInputs.size())
+			return false;
 		boolean[] matched = new boolean[inputs.length];
 
 		for (MachineRecipeInput input : machineInputs) {
@@ -30,7 +32,8 @@ public class ManyToOneRecipe extends Recipe {
 			}
 		}
 		for (boolean b : matched)
-			if (!b) return false;
+			if (!b)
+				return false;
 		return true;
 	}
 

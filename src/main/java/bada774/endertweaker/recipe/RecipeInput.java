@@ -1,12 +1,12 @@
-package shadows.endertweaker.recipe;
+package bada774.endertweaker.recipe;
+
+import javax.annotation.Nonnull;
 
 import crafttweaker.CraftTweakerAPI;
 import crazypants.enderio.base.recipe.IRecipeInput;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
-
-import javax.annotation.Nonnull;
 
 public class RecipeInput implements IRecipeInput {
 

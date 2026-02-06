@@ -1,14 +1,14 @@
-package shadows.endertweaker.bada774.recipe;
-
-import crazypants.enderio.base.recipe.alloysmelter.AlloyRecipeManager;
-import crazypants.enderio.base.recipe.IManyToOneRecipe;
-import crazypants.enderio.base.recipe.lookup.TriItemLookup;
-import crafttweaker.CraftTweakerAPI;
+package bada774.endertweaker.recipe.machines;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
+
+import crazypants.enderio.base.recipe.alloysmelter.AlloyRecipeManager;
+import crazypants.enderio.base.recipe.IManyToOneRecipe;
+import crazypants.enderio.base.recipe.lookup.TriItemLookup;
+import crafttweaker.CraftTweakerAPI;
 
 public class AlloySmelterRecipe {
 
@@ -50,12 +50,19 @@ public class AlloySmelterRecipe {
         }
     }
 
-    public static void setNewLookup(TriItemLookup<IManyToOneRecipe> newLookup) {
+    public static void commitChanges(TriItemLookup<IManyToOneRecipe> newLookup, List<IManyToOneRecipe> validRecipes) {
+        AlloyRecipeManager manager = AlloyRecipeManager.getInstance();
         try {
-            lookupField.set(AlloyRecipeManager.getInstance(), newLookup);
+            lookupField.set(manager, newLookup);
+
+            List<IManyToOneRecipe> internalList = manager.getRecipes();
+            if (internalList != null) {
+                internalList.clear();
+                internalList.addAll(validRecipes);
+            }
 
         } catch (Exception e) {
-            CraftTweakerAPI.logError("Failed to set Alloy Smelter recipe lookup:\n", e);
+            CraftTweakerAPI.logError("Failed to commit Alloy Smelter changes:\n", e);
             e.printStackTrace();
         }
     }

@@ -1,4 +1,6 @@
-package shadows.endertweaker.recipe;
+package bada774.endertweaker.recipe.machines;
+
+import bada774.endertweaker.recipe.RecipeInput;
 
 import net.minecraft.item.crafting.Ingredient;
 

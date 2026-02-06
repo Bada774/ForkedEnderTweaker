@@ -1,4 +1,7 @@
-package shadows.endertweaker;
+package bada774.endertweaker;
+
+import bada774.endertweaker.recipe.machines.VatRecipeInput;
+import bada774.endertweaker.utils.RecipeUtils;
 
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ZenRegister;
@@ -13,7 +16,6 @@ import crazypants.enderio.base.recipe.RecipeInput;
 import crazypants.enderio.base.recipe.RecipeLevel;
 import crazypants.enderio.base.recipe.RecipeOutput;
 import crazypants.enderio.base.recipe.vat.VatRecipeManager;
-import shadows.endertweaker.recipe.VatRecipeInput;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -23,19 +25,24 @@ import stanhebben.zenscript.annotations.ZenMethod;
 public class Vat {
 
 	@ZenMethod
-	public static void addRecipe(ILiquidStack output, float inMult, ILiquidStack input, IIngredient[] slot1Solids, float[] slot1Mults, IIngredient[] slot2Solids, float[] slot2Mults, @Optional int energyCost) {
-		if (hasErrors(output, input, slot1Solids, slot1Mults, slot2Solids, slot2Mults)) return;
+	public static void addRecipe(ILiquidStack output, float inMult, ILiquidStack input, IIngredient[] slot1Solids,
+			float[] slot1Mults, IIngredient[] slot2Solids, float[] slot2Mults, @Optional int energyCost) {
+		if (hasErrors(output, input, slot1Solids, slot1Mults, slot2Solids, slot2Mults))
+			return;
 		EnderTweaker.ADDITIONS.add(() -> {
 			RecipeOutput out = new RecipeOutput(CraftTweakerMC.getLiquidStack(output));
-			Recipe rec = new Recipe(out, energyCost <= 0 ? 5000 : energyCost, RecipeBonusType.NONE, RecipeLevel.IGNORE, getVatInputs(input, inMult <= 0 ? 1 : inMult, slot1Solids, slot1Mults, slot2Solids, slot2Mults));
+			Recipe rec = new Recipe(out, energyCost <= 0 ? 5000 : energyCost, RecipeBonusType.NONE, RecipeLevel.IGNORE,
+					getVatInputs(input, inMult <= 0 ? 1 : inMult, slot1Solids, slot1Mults, slot2Solids, slot2Mults));
 			VatRecipeManager.getInstance().addRecipe(rec);
 		});
 	}
 
 	@ZenMethod
 	@Deprecated
-	public static void addRecipe(ILiquidStack output, ILiquidStack input, IIngredient[] slot1Solids, float[] slot1Mults, IIngredient[] slot2Solids, float[] slot2Mults, @Optional int energyCost) {
-		CraftTweakerAPI.logError("Using Vat#addRecipe(ILiquidStack output, ILiquidStack input, IIngredient[] slot1Solids, float[] slot1Mults, IIngredient[] slot2Solids, float[] slot2Mults, @Optional int energyCost) is deprecated and will be removed in a future release.");
+	public static void addRecipe(ILiquidStack output, ILiquidStack input, IIngredient[] slot1Solids, float[] slot1Mults,
+			IIngredient[] slot2Solids, float[] slot2Mults, @Optional int energyCost) {
+		CraftTweakerAPI.logError(
+				"Using Vat#addRecipe(ILiquidStack output, ILiquidStack input, IIngredient[] slot1Solids, float[] slot1Mults, IIngredient[] slot2Solids, float[] slot2Mults, @Optional int energyCost) is deprecated and will be removed in a future release.");
 		addRecipe(output, 1, input, slot1Solids, slot1Mults, slot2Solids, slot2Mults, energyCost);
 	}
 
@@ -55,11 +62,13 @@ public class Vat {
 			}
 			if (rec != null) {
 				VatRecipeManager.getInstance().getRecipes().remove(rec);
-			} else CraftTweakerAPI.logError("No Vat recipe found for " + output.getName());
+			} else
+				CraftTweakerAPI.logError("No Vat recipe found for " + output.getName());
 		});
 	}
 
-	public static boolean hasErrors(ILiquidStack output, ILiquidStack input, IIngredient[] slot1Solids, float[] slot1Mults, IIngredient[] slot2Solids, float[] slot2Mults) {
+	public static boolean hasErrors(ILiquidStack output, ILiquidStack input, IIngredient[] slot1Solids,
+			float[] slot1Mults, IIngredient[] slot2Solids, float[] slot2Mults) {
 		if (output == null) {
 			CraftTweakerAPI.logError("Invalid null output in Vat recipe!");
 			return true;
@@ -69,17 +78,22 @@ public class Vat {
 			return true;
 		}
 		if (slot1Solids.length != slot1Mults.length) {
-			CraftTweakerAPI.logError("Invalid slot 1 configuration in vat recipe; slot1Solids must have equal length of slot1Mults! Provided: " + RecipeUtils.getDisplayString(slot1Solids) + " | " + slot1Mults);
+			CraftTweakerAPI.logError(
+					"Invalid slot 1 configuration in vat recipe; slot1Solids must have equal length of slot1Mults! Provided: "
+							+ RecipeUtils.getDisplayString(slot1Solids) + " | " + slot1Mults);
 			return true;
 		}
 		if (slot2Solids.length != slot2Mults.length) {
-			CraftTweakerAPI.logError("Invalid slot 2 configuration in vat recipe; slot1Solids must have equal length of slot2Mults! Provided: " + RecipeUtils.getDisplayString(slot2Solids) + " | " + slot2Mults);
+			CraftTweakerAPI.logError(
+					"Invalid slot 2 configuration in vat recipe; slot1Solids must have equal length of slot2Mults! Provided: "
+							+ RecipeUtils.getDisplayString(slot2Solids) + " | " + slot2Mults);
 			return true;
 		}
 		return false;
 	}
 
-	public static IRecipeInput[] getVatInputs(ILiquidStack input, float inMult, IIngredient[] slot1, float[] slot1Mult, IIngredient[] slot2, float[] slot2Mult) {
+	public static IRecipeInput[] getVatInputs(ILiquidStack input, float inMult, IIngredient[] slot1, float[] slot1Mult,
+			IIngredient[] slot2, float[] slot2Mult) {
 		IRecipeInput[] ret = new IRecipeInput[1 + slot1.length + slot2.length];
 		int x = 0;
 		ret[ret.length - 1] = new RecipeInput(CraftTweakerMC.getLiquidStack(input), inMult);

@@ -46,6 +46,8 @@ dependencies {
     deobfCompile "curse.maven:the-one-probe-245211:2667280"
     deobfCompile "curse.maven:enderio-5.3.72-64578:4674244"
     deobfCompile "curse.maven:endercore-0.5.78-231868:4671384"
+    deobfCompile "curse.maven:zenutils-1.26.14-401178:7498338"
+    deobfCompile "curse.maven:zenrecipereloading-1.4.5-911152:6024502"
 	deobfCompile "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.+"
 }
 

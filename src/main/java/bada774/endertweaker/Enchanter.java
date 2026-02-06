@@ -1,4 +1,4 @@
-package shadows.endertweaker;
+package bada774.endertweaker;
 
 import java.util.Map;
 
@@ -23,13 +23,15 @@ import stanhebben.zenscript.annotations.ZenMethod;
 public class Enchanter {
 
 	@ZenMethod
-	public static void addRecipe(IEnchantmentDefinition output, IIngredient input, int amountPerLevel, double costMultiplier) {
+	public static void addRecipe(IEnchantmentDefinition output, IIngredient input, int amountPerLevel,
+			double costMultiplier) {
 		if (output == null) {
 			CraftTweakerAPI.logError("Cannot add recipe for null to enchanter.");
 			return;
 		}
 		if (input == null) {
-			CraftTweakerAPI.logError("Cannot add recipe for " + output.getTranslatedName(1) + " with null input to enchanter.");
+			CraftTweakerAPI.logError(
+					"Cannot add recipe for " + output.getTranslatedName(1) + " with null input to enchanter.");
 			return;
 		}
 		EnderTweaker.ADDITIONS.add(() -> {
@@ -37,7 +39,8 @@ public class Enchanter {
 			thing.add(new NNList<>(CraftTweakerMC.getIngredient(input).getMatchingStacks()));
 			Enchantment enchantment = (Enchantment) output.getInternal();
 			if (!thing.isEmpty() && enchantment != null) {
-				EnchanterRecipe recipe = new EnchanterRecipe(RecipeLevel.IGNORE, thing, amountPerLevel, enchantment, costMultiplier);
+				EnchanterRecipe recipe = new EnchanterRecipe(RecipeLevel.IGNORE, thing, amountPerLevel, enchantment,
+						costMultiplier);
 				MachineRecipeRegistry.instance.registerRecipe(recipe);
 			}
 		});
@@ -53,8 +56,8 @@ public class Enchanter {
 			Enchantment ench = (Enchantment) output.getInternal();
 			String id = null;
 			IMachineRecipe recipe = null;
-			for (Map.Entry<String, ? extends IMachineRecipe> ent :
-			MachineRecipeRegistry.instance.getRecipesForMachine(MachineRecipeRegistry.ENCHANTER).entrySet()) {
+			for (Map.Entry<String, ? extends IMachineRecipe> ent : MachineRecipeRegistry.instance
+					.getRecipesForMachine(MachineRecipeRegistry.ENCHANTER).entrySet()) {
 				if (((EnchanterRecipe) ent.getValue()).getEnchantment() == ench) {
 					id = ent.getKey();
 					recipe = ent.getValue();
@@ -63,7 +66,8 @@ public class Enchanter {
 			}
 			if (id != null) {
 				MachineRecipeRegistry.instance.removeRecipe(recipe);
-			} else CraftTweakerAPI.logError("No Enchanter recipe found for " + output.getName());
+			} else
+				CraftTweakerAPI.logError("No Enchanter recipe found for " + output.getName());
 		});
 	}
 

@@ -1,4 +1,7 @@
-package shadows.endertweaker;
+package bada774.endertweaker;
+
+import bada774.endertweaker.recipe.ManyToOneRecipe;
+import bada774.endertweaker.utils.RecipeUtils;
 
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ZenRegister;
@@ -12,7 +15,6 @@ import crazypants.enderio.base.recipe.RecipeOutput;
 import crazypants.enderio.base.recipe.slicensplice.SliceAndSpliceRecipeManager;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-import shadows.endertweaker.recipe.ManyToOneRecipe;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -23,10 +25,12 @@ public class SliceNSplice {
 
 	@ZenMethod
 	public static void addRecipe(IItemStack output, IIngredient[] input, @Optional int energyCost, @Optional float xp) {
-		if (hasErrors(output, input)) return;
+		if (hasErrors(output, input))
+			return;
 		EnderTweaker.ADDITIONS.add(() -> {
 			RecipeOutput out = new RecipeOutput(CraftTweakerMC.getItemStack(output), 1, xp);
-			ManyToOneRecipe rec = new ManyToOneRecipe(out, energyCost <= 0 ? 5000 : energyCost, RecipeBonusType.NONE, RecipeLevel.IGNORE, RecipeUtils.toEIOInputs(input));
+			ManyToOneRecipe rec = new ManyToOneRecipe(out, energyCost <= 0 ? 5000 : energyCost, RecipeBonusType.NONE,
+					RecipeLevel.IGNORE, RecipeUtils.toEIOInputs(input));
 			SliceAndSpliceRecipeManager.getInstance().addRecipe(rec);
 		});
 	}
@@ -48,7 +52,8 @@ public class SliceNSplice {
 			}
 			if (rec != null) {
 				SliceAndSpliceRecipeManager.getInstance().getRecipes().remove(rec);
-			} else CraftTweakerAPI.logError("No Slice'n'Splice recipe found for " + output.getDisplayName());
+			} else
+				CraftTweakerAPI.logError("No Slice'n'Splice recipe found for " + output.getDisplayName());
 		});
 	}
 
@@ -58,7 +63,8 @@ public class SliceNSplice {
 			return true;
 		}
 		if (input.length > 6) {
-			CraftTweakerAPI.logError("Invalid Slice'n'Splice input, must be between 1 and 6 inputs.  Provided: " + RecipeUtils.getDisplayString(input));
+			CraftTweakerAPI.logError("Invalid Slice'n'Splice input, must be between 1 and 6 inputs.  Provided: "
+					+ RecipeUtils.getDisplayString(input));
 			return true;
 		}
 		return false;

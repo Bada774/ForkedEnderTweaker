@@ -1,4 +1,4 @@
-package shadows.endertweaker.bada774;
+package bada774.endertweaker.utils;
 
 import java.util.List;
 
@@ -6,8 +6,8 @@ import crafttweaker.CraftTweakerAPI;
 
 public class Logging {
 
-    public static void logRemovalResult(String machineName, int count, String type, List<String> successLog,
-            List<String> missingLog) {
+    public static void logRemovalResult(String machineName, int count, String type,
+            List<String> successLog, List<String> missingLog) {
         if (!successLog.isEmpty()) {
             String joinedSuccess = String.join(", ", successLog);
             CraftTweakerAPI

@@ -1,4 +1,4 @@
-package shadows.endertweaker;
+package bada774.endertweaker;
 
 import java.util.Map;
 
@@ -31,7 +31,8 @@ public class Tank {
 		EnderTweaker.ADDITIONS.add(() -> {
 			Things in = new Things().add(new NNList<>(CraftTweakerMC.getIngredient(input).getMatchingStacks()));
 			Things out = new Things().add(CraftTweakerMC.getItemStack(output));
-			TankMachineRecipe rec = new TankMachineRecipe("tank_recipe_" + k++, fill, in, CraftTweakerMC.getLiquidStack(fluid), out, Logic.NONE, RecipeLevel.IGNORE);
+			TankMachineRecipe rec = new TankMachineRecipe("tank_recipe_" + k++, fill, in,
+					CraftTweakerMC.getLiquidStack(fluid), out, Logic.NONE, RecipeLevel.IGNORE);
 			MachineRecipeRegistry.instance.registerRecipe(rec);
 		});
 	}
@@ -45,17 +46,19 @@ public class Tank {
 		EnderTweaker.REMOVALS.add(() -> {
 			String rec = null;
 			String id = fill ? MachineRecipeRegistry.TANK_FILLING : MachineRecipeRegistry.TANK_EMPTYING;
-			for (Map.Entry<String, ? extends IMachineRecipe> ent :
-			MachineRecipeRegistry.instance.getRecipesForMachine(id).entrySet()) {
+			for (Map.Entry<String, ? extends IMachineRecipe> ent : MachineRecipeRegistry.instance
+					.getRecipesForMachine(id).entrySet()) {
 				TankMachineRecipe r = (TankMachineRecipe) ent.getValue();
-				if (r.getFluid().getFluid().getName().equals(fluid.getName()) && OreDictionary.itemMatches(CraftTweakerMC.getItemStack(output), r.getOutput().getMatchingStacks()[0], false)) {
+				if (r.getFluid().getFluid().getName().equals(fluid.getName()) && OreDictionary.itemMatches(
+						CraftTweakerMC.getItemStack(output), r.getOutput().getMatchingStacks()[0], false)) {
 					rec = ent.getKey();
 					break;
 				}
 			}
 			if (rec != null) {
 				MachineRecipeRegistry.instance.getRecipesForMachine(id).remove(rec);
-			} else CraftTweakerAPI.logError("No tank recipe found for " + output.getName() + " | " + fluid.getName());
+			} else
+				CraftTweakerAPI.logError("No tank recipe found for " + output.getName() + " | " + fluid.getName());
 		});
 	}
 }

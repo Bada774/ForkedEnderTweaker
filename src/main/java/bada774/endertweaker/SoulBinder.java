@@ -1,6 +1,8 @@
-package shadows.endertweaker;
+package bada774.endertweaker;
 
 import java.util.Map;
+
+import bada774.endertweaker.recipe.machines.SoulBinderRecipe;
 
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ZenRegister;
@@ -14,7 +16,6 @@ import crazypants.enderio.base.recipe.soul.ISoulBinderRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
-import shadows.endertweaker.recipe.SoulBinderRecipe;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -24,7 +25,8 @@ import stanhebben.zenscript.annotations.ZenMethod;
 public class SoulBinder {
 
 	@ZenMethod
-	public static void addRecipe(IItemStack output, IIngredient input, String[] entities, int xp, @Optional int energyCost) {
+	public static void addRecipe(IItemStack output, IIngredient input, String[] entities, int xp,
+			@Optional int energyCost) {
 		EnderTweaker.ADDITIONS.add(() -> MachineRecipeRegistry.instance.registerRecipe(
 				new SoulBinderRecipe(CraftTweakerMC.getIngredient(input), CraftTweakerMC.getItemStack(output), xp,
 						energyCost <= 0 ? 5000 : energyCost, RecipeLevel.IGNORE, toRelocs(entities))));
@@ -40,7 +42,8 @@ public class SoulBinder {
 			ItemStack stack = CraftTweakerMC.getItemStack(output);
 			String id = null;
 			IMachineRecipe recipe = null;
-			for (Map.Entry<String, ? extends IMachineRecipe> ent : MachineRecipeRegistry.instance.getRecipesForMachine(MachineRecipeRegistry.SOULBINDER).entrySet()) {
+			for (Map.Entry<String, ? extends IMachineRecipe> ent : MachineRecipeRegistry.instance
+					.getRecipesForMachine(MachineRecipeRegistry.SOULBINDER).entrySet()) {
 				if (OreDictionary.itemMatches(stack, ((ISoulBinderRecipe) ent.getValue()).getOutputStack(), false)) {
 					id = ent.getKey();
 					recipe = ent.getValue();
@@ -49,7 +52,8 @@ public class SoulBinder {
 			}
 			if (id != null) {
 				MachineRecipeRegistry.instance.removeRecipe(recipe);
-			} else CraftTweakerAPI.logError("No Soul Binder recipe found for " + output.getDisplayName());
+			} else
+				CraftTweakerAPI.logError("No Soul Binder recipe found for " + output.getDisplayName());
 		});
 	}
 
