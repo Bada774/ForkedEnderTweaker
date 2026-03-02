@@ -183,7 +183,7 @@ The logic is based on **Heat Balance**. Burning fuel generates Heat. The Coolant
 
 #### Basic understanding of Combustion Generator Mechanics:
 
-_(Note: Variables marked as $$$${\color{green}variable}$$<code id="own-variable_code">variable</code>$$ are variables you set in your ZenScript script.  
+_(Note: Variables marked as $${\color{green}variable}$$<code id="own-variable_code">variable</code>$$ are variables you set in your ZenScript script.  
 Variables marked as <code id="source-variable_code">variable</code> are derived from EnderIO's source code)._
 
 <h5 id="combustion_multipliers">1. Capacitor & Machine Modifiers</h5>
