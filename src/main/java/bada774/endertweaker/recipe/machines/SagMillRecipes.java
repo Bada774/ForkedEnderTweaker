@@ -9,9 +9,9 @@ import crazypants.enderio.base.recipe.RecipeBonusType;
 import crazypants.enderio.base.recipe.RecipeLevel;
 import crazypants.enderio.base.recipe.RecipeOutput;
 
-public class SagRecipe extends Recipe {
+public class SagMillRecipes extends Recipe {
 
-	public SagRecipe(IRecipeInput input, int energyRequired, RecipeBonusType bonusType, RecipeLevel level,
+	public SagMillRecipes(IRecipeInput input, int energyRequired, RecipeBonusType bonusType, RecipeLevel level,
 			RecipeOutput... output) {
 		super(input, energyRequired, bonusType, level, output);
 	}

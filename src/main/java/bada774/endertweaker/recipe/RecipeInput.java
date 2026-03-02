@@ -15,7 +15,7 @@ public class RecipeInput implements IRecipeInput {
 	public RecipeInput(Ingredient ing) {
 		this.ing = ing;
 		if (ing.getMatchingStacks().length == 0) {
-			CraftTweakerAPI.logInfo("EnderTweaker received an empty ingredient. This may cause problems.");
+			CraftTweakerAPI.logInfo("FET received an empty ingredient\nThis may cause problems");
 			CraftTweakerAPI.logInfo(ing.toString());
 		}
 	}

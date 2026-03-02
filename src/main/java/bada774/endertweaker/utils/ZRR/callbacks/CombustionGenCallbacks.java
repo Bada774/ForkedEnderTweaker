@@ -1,7 +1,7 @@
 package bada774.endertweaker.utils.ZRR.callbacks;
 
 import bada774.endertweaker.CombustionGen;
-import bada774.endertweaker.recipe.machines.CombustionGenRecipe;
+import bada774.endertweaker.recipe.machines.CombustionGenRecipes;
 
 import youyihj.zenrecipereloading.module.PlainModule;
 import youyihj.zenutils.api.reload.ActionReloadCallback;
@@ -22,7 +22,10 @@ public class CombustionGenCallbacks {
 
         @Override
         public void undo() {
-            CombustionGenRecipe.getFuels().remove(action.fluidName);
+            if (action.addedFuel != null &&
+                    CombustionGenRecipes.getFuels().get(action.logName) == action.addedFuel) {
+                CombustionGenRecipes.getFuels().remove(action.logName);
+            }
         }
 
         @Override
@@ -39,7 +42,7 @@ public class CombustionGenCallbacks {
         @Override
         public void undo() {
             if (action.backupFuel != null) {
-                CombustionGenRecipe.getFuels().put(action.fluidName, action.backupFuel);
+                CombustionGenRecipes.getFuels().put(action.logName, action.backupFuel);
             }
         }
 
@@ -56,7 +59,10 @@ public class CombustionGenCallbacks {
 
         @Override
         public void undo() {
-            CombustionGenRecipe.getCoolants().remove(action.fluidName);
+            if (action.addedCoolant != null
+                    && CombustionGenRecipes.getCoolants().get(action.logName) == action.addedCoolant) {
+                CombustionGenRecipes.getCoolants().remove(action.logName);
+            }
         }
 
         @Override
@@ -72,7 +78,7 @@ public class CombustionGenCallbacks {
 
         public void undo() {
             if (action.backupCoolant != null) {
-                CombustionGenRecipe.getCoolants().put(action.fluidName, action.backupCoolant);
+                CombustionGenRecipes.getCoolants().put(action.logName, action.backupCoolant);
             }
         }
 

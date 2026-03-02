@@ -5,7 +5,8 @@ import java.util.List;
 
 import bada774.endertweaker.utils.Logging;
 import bada774.endertweaker.utils.RecipeUtils;
-import bada774.endertweaker.recipe.machines.AlloySmelterRecipe;
+import bada774.endertweaker.utils.ValidationUtils;
+import bada774.endertweaker.recipe.machines.AlloySmelterRecipes;
 import bada774.endertweaker.utils.LateAction;
 
 import com.enderio.core.common.util.NNList;
@@ -31,41 +32,40 @@ import stanhebben.zenscript.annotations.ZenMethod;
 @ZenRegister
 public class AlloySmelter {
 
+	private final static String MACHINE_NAME = "AlloySmelter",
+			ITEM_TYPE = "recipe";
+
+	private static final String METHOD_ADD_RECIPE = "addRecipe",
+			METHOD_REMOVE_RECIPE = "removeRecipe",
+			METHOD_REMOVE_BY_INPUTS = "removeByInputs";
+
 	@ZenMethod
 	public static void addRecipe(IItemStack output, IIngredient[] input, @Optional int energyCost, @Optional float xp) {
-		if (hasErrors(output, input))
+
+		if (hasErrors(output, input, METHOD_ADD_RECIPE))
 			return;
 		CraftTweakerAPI.apply(new AddRecipeAction(output, input, energyCost, xp));
 	}
 
 	@ZenMethod
 	public static void removeRecipe(IItemStack... outputs) {
-		if (outputs == null || outputs.length == 0)
+
+		if (hasErrors(outputs, METHOD_REMOVE_RECIPE))
 			return;
 		CraftTweakerAPI.apply(new RemoveByOutputAction(outputs));
 	}
 
 	@ZenMethod
-	public static void removeByInputs(IItemStack[] inputs) {
-		CraftTweakerAPI.apply(new RemoveByInputsAction(new IItemStack[][] { inputs }));
-	}
-
-	@ZenMethod
 	public static void removeByInputs(IItemStack[][] inputs) {
+
+		if (hasErrors(inputs, METHOD_REMOVE_BY_INPUTS))
+			return;
 		CraftTweakerAPI.apply(new RemoveByInputsAction(inputs));
 	}
 
-	public static boolean hasErrors(IItemStack output, IIngredient[] input) {
-		if (output == null || output.isEmpty()) {
-			CraftTweakerAPI.logError("Invalid output (empty or null) in Alloy Smelter recipe: " + output);
-			return true;
-		}
-		if (input.length > 3) {
-			CraftTweakerAPI.logError("Invalid Alloy Smelter input, must be between 1 and 3 inputs. Provided: "
-					+ RecipeUtils.getDisplayString(input));
-			return true;
-		}
-		return false;
+	@ZenMethod
+	public static void removeByInputs(IItemStack[] inputs) {
+		removeByInputs(new IItemStack[][] { inputs });
 	}
 
 	public static class AddRecipeAction extends LateAction {
@@ -73,41 +73,58 @@ public class AlloySmelter {
 		public final NNList<IRecipeInput> inputs;
 		public final int energyCost;
 		public final float xp;
-		public final String recipeName;
+		public final String logName;
+
+		public boolean recipeCreated = false;
 
 		AddRecipeAction(IItemStack output, IIngredient[] ctInputs, int energyCost, float xp) {
 			this.output = CraftTweakerMC.getItemStack(output);
 			this.inputs = RecipeUtils.toEIOInputsNN(ctInputs);
 			this.energyCost = energyCost <= 0 ? 5000 : energyCost;
 			this.xp = xp;
-			this.recipeName = output.getDisplayName();
+			this.logName = output.getDisplayName();
+		}
+
+		private String checkConflict() {
+			if (AlloyRecipeManager.getInstance() == null)
+				return null;
+
+			for (IManyToOneRecipe recipe : AlloySmelterRecipes.getAlloyRecipes()) {
+				if (recipe != null
+						&& RecipeUtils.areInputsMatch(RecipeUtils.toEIOInputsNN(recipe.getInputs()), inputs)) {
+
+					return RecipeUtils.getConflictingOutputName(recipe.getOutput());
+				}
+			}
+			return null;
 		}
 
 		@Override
 		public void execute() {
-			if (AlloyRecipeManager.getInstance() == null)
-				return;
+			String conflictingName = checkConflict();
 
-			for (IManyToOneRecipe recipe : AlloySmelterRecipe.getAlloyRecipes()) {
-				if (recipe != null && OreDictionary.itemMatches(output, recipe.getOutput(),
-						true)
-						&& RecipeUtils.areInputsMatch(RecipeUtils.toEIOInputsNN(recipe.getInputs()),
-								inputs)) {
-					return;
-				}
+			if (conflictingName != null) {
+				Logging.logValidationError(MACHINE_NAME, METHOD_ADD_RECIPE, String.format(
+						"Failed to add %s for: %s\nA %s already exists for these exact inputs!\nConflicting %s output: %s",
+						ITEM_TYPE, logName, ITEM_TYPE, ITEM_TYPE, conflictingName));
+				return;
 			}
+
 			AlloyRecipeManager.getInstance().addRecipe(true, inputs, output, energyCost, xp, RecipeLevel.IGNORE);
+			this.recipeCreated = true;
+
+			Logging.logAddition(
+					MACHINE_NAME, METHOD_ADD_RECIPE, ITEM_TYPE, logName);
 		}
 
 		@Override
 		public String describe() {
-			return "Adding Alloy Smelter recipe for: " + recipeName;
+			return String.format("Adding %s %ss by %s for: %s", MACHINE_NAME, ITEM_TYPE, METHOD_ADD_RECIPE, logName);
 		}
 	}
 
 	public static class RemoveByOutputAction extends LateAction {
 		public final IItemStack[] outputs;
-
 		public final List<IManyToOneRecipe> backupRecipes = new ArrayList<>();
 
 		public RemoveByOutputAction(IItemStack[] outputs) {
@@ -116,7 +133,9 @@ public class AlloySmelter {
 
 		@Override
 		public void execute() {
-			List<IManyToOneRecipe> alloyRecipes = AlloySmelterRecipe.getAlloyRecipes();
+			backupRecipes.clear();
+
+			List<IManyToOneRecipe> alloyRecipes = AlloySmelterRecipes.getAlloyRecipes();
 			if (alloyRecipes.isEmpty())
 				return;
 
@@ -124,22 +143,13 @@ public class AlloySmelter {
 			List<String> targetNames = new ArrayList<>();
 
 			for (IItemStack output : outputs) {
-				if (output != null && !output.isEmpty()) {
-					targetOutputs.add(CraftTweakerMC.getItemStack(output));
-					targetNames.add(output.getDisplayName());
-				} else {
-					CraftTweakerAPI
-							.logError("Invalid output null in Alloy Smelter recipe removal: " + output);
-				}
+				targetOutputs.add(CraftTweakerMC.getItemStack(output));
+				targetNames.add(output.getDisplayName());
 			}
 
-			if (targetOutputs.isEmpty())
-				return;
-
-			TriItemLookup<IManyToOneRecipe> newLookup = AlloySmelterRecipe.createLookup();
+			TriItemLookup<IManyToOneRecipe> newLookup = AlloySmelterRecipes.createLookup();
 			List<IManyToOneRecipe> validRecipes = new ArrayList<>();
 
-			backupRecipes.clear();
 			int removedCount = 0;
 			boolean[] foundMatch = new boolean[targetOutputs.size()];
 
@@ -160,38 +170,36 @@ public class AlloySmelter {
 					backupRecipes.add(recipe);
 					removedCount++;
 				} else {
-					AlloySmelterRecipe.addRecipeToLookup(newLookup, recipe);
+					AlloySmelterRecipes.addRecipeToLookup(newLookup, recipe);
 					validRecipes.add(recipe);
 				}
 			}
 
 			if (removedCount > 0) {
-				AlloySmelterRecipe.commitChanges(newLookup, validRecipes);
+				AlloySmelterRecipes.commitChanges(newLookup, validRecipes);
 			}
 
-			List<String> successRemovedList = new ArrayList<>();
+			List<String> successList = new ArrayList<>();
 			List<String> missingList = new ArrayList<>();
 
 			for (int i = 0; i < foundMatch.length; i++) {
-				if (foundMatch[i]) {
-					successRemovedList.add(targetNames.get(i));
-				} else {
+				if (foundMatch[i])
+					successList.add(targetNames.get(i));
+				else
 					missingList.add(targetNames.get(i));
-				}
 			}
-			Logging.logRemovalResult("Alloy Smelter", removedCount, "removeRecipe",
-					successRemovedList, missingList);
+			Logging.logRemoval(MACHINE_NAME, METHOD_REMOVE_RECIPE, ITEM_TYPE,
+					successList, missingList);
 		}
 
 		@Override
 		public String describe() {
-			return "Removing Alloy Smelter recipes by output";
+			return String.format("Removing %s %ss by %s", MACHINE_NAME, ITEM_TYPE, METHOD_REMOVE_RECIPE);
 		}
 	}
 
 	public static class RemoveByInputsAction extends LateAction {
 		public final IItemStack[][] inputs;
-
 		public final List<IManyToOneRecipe> backupRecipes = new ArrayList<>();
 
 		public RemoveByInputsAction(IItemStack[][] inputs) {
@@ -200,7 +208,7 @@ public class AlloySmelter {
 
 		@Override
 		public void execute() {
-			List<IManyToOneRecipe> alloyRecipes = AlloySmelterRecipe.getAlloyRecipes();
+			List<IManyToOneRecipe> alloyRecipes = AlloySmelterRecipes.getAlloyRecipes();
 			if (alloyRecipes.isEmpty())
 				return;
 
@@ -208,11 +216,9 @@ public class AlloySmelter {
 			List<IItemStack[]> validInputs = new ArrayList<>();
 
 			for (IItemStack[] filterInput : inputs) {
-				if (filterInput == null || filterInput.length == 0
-						|| filterInput.length > 3) {
-					CraftTweakerAPI.logError(
-							"Invalid Alloy Smelter recipe inputs: " + ((filterInput == null) ? "null"
-									: RecipeUtils.getDisplayString(filterInput)));
+				if (ValidationUtils.isInvalid(filterInput) || filterInput.length > 3) {
+					Logging.logValidationError(MACHINE_NAME, METHOD_REMOVE_BY_INPUTS,
+							String.format("Invalid %s inputs, must be between 1 and 3 inputs", ITEM_TYPE));
 					continue;
 				}
 
@@ -231,10 +237,10 @@ public class AlloySmelter {
 			if (targetsList.isEmpty())
 				return;
 
-			TriItemLookup<IManyToOneRecipe> newLookup = AlloySmelterRecipe.createLookup();
+			TriItemLookup<IManyToOneRecipe> newLookup = AlloySmelterRecipes.createLookup();
 			List<IManyToOneRecipe> validRecipes = new ArrayList<>();
-
 			backupRecipes.clear();
+
 			int removedCount = 0;
 			boolean[] foundMatch = new boolean[targetsList.size()];
 
@@ -255,44 +261,77 @@ public class AlloySmelter {
 					backupRecipes.add(recipe);
 					removedCount++;
 				} else {
-					AlloySmelterRecipe.addRecipeToLookup(newLookup, recipe);
+					AlloySmelterRecipes.addRecipeToLookup(newLookup, recipe);
 					validRecipes.add(recipe);
 				}
 			}
 
 			if (removedCount > 0) {
-				AlloySmelterRecipe.commitChanges(newLookup, validRecipes);
+				AlloySmelterRecipes.commitChanges(newLookup, validRecipes);
 			}
 
-			List<String> successLog = new ArrayList<>();
-			List<String> missingLog = new ArrayList<>();
+			List<String> successList = new ArrayList<>();
+			List<String> missingList = new ArrayList<>();
 
 			for (int i = 0; i < foundMatch.length; i++) {
-				StringBuilder sbName = new StringBuilder("[");
-				boolean firstItem = true;
-				for (IItemStack item : validInputs.get(i)) {
-					if (item != null) {
-						if (!firstItem)
-							sbName.append(", ");
-						sbName.append(item.getDisplayName());
-						firstItem = false;
-					}
-				}
-				sbName.append("]");
-				if (foundMatch[i]) {
-					successLog.add(sbName.toString());
-				} else {
-					missingLog.add(sbName.toString());
-				}
+
+				String recipeString = RecipeUtils.getDisplayString(validInputs.get(i));
+				if (foundMatch[i])
+					successList.add(recipeString);
+				else
+					missingList.add(recipeString);
 			}
 
-			Logging.logRemovalResult("Alloy Smelter", removedCount, "removeByInputs", successLog, missingLog);
+			Logging.logRemoval(MACHINE_NAME, METHOD_REMOVE_BY_INPUTS, ITEM_TYPE,
+					successList, missingList);
 		}
 
 		@Override
 		public String describe() {
-			return "Removing Alloy Smelter recipes by inputs";
+			return String.format("Removing %s %ss by %s", MACHINE_NAME, ITEM_TYPE, METHOD_REMOVE_BY_INPUTS);
+		}
+	}
+
+	private static boolean hasErrors(IItemStack output, IIngredient[] input, String methodName) {
+		if (ValidationUtils.isInvalid(output)) {
+			Logging.logValidationError(MACHINE_NAME, methodName,
+					String.format("Invalid output (empty or null) for %s", ITEM_TYPE));
+			return true;
+		}
+		if (ValidationUtils.isInvalid(input)) {
+			Logging.logValidationError(MACHINE_NAME, methodName,
+					String.format("Invalid input array (empty or null) for output: %s", output.getDisplayName()));
+			return true;
+		}
+		if (input.length > 3) {
+			Logging.logValidationError(MACHINE_NAME, methodName,
+					String.format("Invalid input for %s, must be between 1 and 3 inputs", ITEM_TYPE));
+			return true;
+		}
+		for (IIngredient ing : input) {
+			if (ValidationUtils.isInvalid(ing)) {
+				Logging.logValidationError(MACHINE_NAME, methodName,
+						"Invalid input: one of the ingredients is null or empty");
+				return true;
+			}
 		}
 
+		return false;
+	}
+
+	private static boolean hasErrors(IItemStack[] array, String methodName) {
+		if (ValidationUtils.isInvalid(array)) {
+			Logging.logValidationError(MACHINE_NAME, methodName, "No items provided or array contains empty items");
+			return true;
+		}
+		return false;
+	}
+
+	private static boolean hasErrors(IItemStack[][] array, String methodName) {
+		if (ValidationUtils.isInvalid(array)) {
+			Logging.logValidationError(MACHINE_NAME, methodName, "No item arrays provided");
+			return true;
+		}
+		return false;
 	}
 }

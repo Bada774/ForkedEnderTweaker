@@ -10,11 +10,13 @@ import com.enderio.core.common.util.NNList;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.item.WeightedItemStack;
+import crafttweaker.api.liquid.ILiquidStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import crazypants.enderio.base.recipe.IRecipeInput;
 import crazypants.enderio.base.recipe.RecipeOutput;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.fluids.FluidStack;
 
 public class RecipeUtils {
 	public static IRecipeInput[] toEIOInputs(IIngredient[] inputs) {
@@ -23,6 +25,13 @@ public class RecipeUtils {
 			ret[i] = toInput(inputs[i]);
 		}
 		return ret;
+	}
+
+	public static IRecipeInput toEIOInput(IIngredient ingredient) {
+		if (ingredient == null)
+			return null;
+		NNList<IRecipeInput> list = toEIOInputsNN(new IIngredient[] { ingredient });
+		return list.isEmpty() ? null : list.get(0);
 	}
 
 	public static NNList<IRecipeInput> toEIOInputsNN(IIngredient[] inputs) {
@@ -62,18 +71,48 @@ public class RecipeUtils {
 	}
 
 	public static String getDisplayString(IIngredient... ings) {
+		if (ings == null)
+			return "null";
 		StringBuilder sb = new StringBuilder("[");
-		for (IIngredient i : ings)
-			sb.append(i == null ? i : i.toCommandString() + ",");
-		sb.replace(sb.length() - 1, sb.length(), "");
+		for (int i = 0; i < ings.length; i++) {
+			if (i > 0)
+				sb.append(", ");
+			sb.append(ings[i] == null ? "null" : ings[i].toCommandString());
+		}
 		return sb.append("]").toString();
 	}
 
 	public static String getDisplayString(WeightedItemStack... ings) {
+		if (ings == null)
+			return "null";
 		StringBuilder sb = new StringBuilder("[");
-		for (WeightedItemStack i : ings)
-			sb.append(i == null ? i : i.getStack().toCommandString() + " % " + i.getPercent() + ",");
-		sb.replace(sb.length() - 1, sb.length(), "");
+		for (int i = 0; i < ings.length; i++) {
+			if (i > 0)
+				sb.append(", ");
+			if (ings[i] != null) {
+				sb.append(ings[i].getStack().toCommandString())
+						.append(" % ")
+						.append(ings[i].getPercent());
+			} else {
+				sb.append("null");
+			}
+		}
+		return sb.append("]").toString();
+	}
+
+	public static String getDisplayString(IItemStack... items) {
+		if (items == null)
+			return "null";
+		StringBuilder sb = new StringBuilder("[");
+		boolean first = true;
+		for (IItemStack item : items) {
+			if (item != null) {
+				if (!first)
+					sb.append(", ");
+				sb.append(item.getDisplayName());
+				first = false;
+			}
+		}
 		return sb.append("]").toString();
 	}
 
@@ -106,5 +145,25 @@ public class RecipeUtils {
 				return false;
 		}
 		return true;
+	}
+
+	public static String getConflictingOutputName(ItemStack stack) {
+		if (stack == null || stack.isEmpty())
+			return "Unknown Item";
+		IItemStack ctStack = CraftTweakerMC.getIItemStack(stack);
+		return getConflictingOutputName(ctStack);
+	}
+
+	public static String getConflictingOutputName(IItemStack ctStack) {
+		if (ctStack == null || ctStack.isEmpty())
+			return "Unknown Item";
+		return ctStack.getDisplayName() + " (" + ctStack.toCommandString() + ")";
+	}
+
+	public static String getConflictingOutputName(FluidStack fluid) {
+		if (fluid == null)
+			return "Unknown Fluid";
+		ILiquidStack ctLiquid = CraftTweakerMC.getILiquidStack(fluid);
+		return ctLiquid.getDisplayName() + " (" + ctLiquid.toCommandString() + ")";
 	}
 }

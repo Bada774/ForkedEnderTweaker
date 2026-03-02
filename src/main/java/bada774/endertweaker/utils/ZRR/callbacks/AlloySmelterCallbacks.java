@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bada774.endertweaker.AlloySmelter;
-import bada774.endertweaker.recipe.machines.AlloySmelterRecipe;
+import bada774.endertweaker.recipe.machines.AlloySmelterRecipes;
 import bada774.endertweaker.utils.RecipeUtils;
 
 import com.enderio.core.common.util.NNList;
@@ -32,25 +32,27 @@ public class AlloySmelterCallbacks {
 
         @Override
         public void undo() {
-            NNList<IRecipeInput> targetInputs = action.inputs;
-            ItemStack targetOutput = action.output;
+            if (action.recipeCreated) {
+                NNList<IRecipeInput> targetInputs = action.inputs;
+                ItemStack targetOutput = action.output;
 
-            List<IManyToOneRecipe> currentAlloy = AlloySmelterRecipe.getAlloyRecipes();
-            TriItemLookup<IManyToOneRecipe> newLookup = AlloySmelterRecipe.createLookup();
-            List<IManyToOneRecipe> valid = new ArrayList<>();
-            boolean removed = false;
+                List<IManyToOneRecipe> currentAlloy = AlloySmelterRecipes.getAlloyRecipes();
+                TriItemLookup<IManyToOneRecipe> newLookup = AlloySmelterRecipes.createLookup();
+                List<IManyToOneRecipe> valid = new ArrayList<>();
+                boolean removed = false;
 
-            for (IManyToOneRecipe r : currentAlloy) {
-                if (OreDictionary.itemMatches(targetOutput, r.getOutput(), true)
-                        && RecipeUtils.areInputsMatch(RecipeUtils.toEIOInputsNN(r.getInputs()), targetInputs)) {
-                    removed = true;
-                } else {
-                    AlloySmelterRecipe.addRecipeToLookup(newLookup, r);
-                    valid.add(r);
+                for (IManyToOneRecipe r : currentAlloy) {
+                    if (OreDictionary.itemMatches(targetOutput, r.getOutput(), true)
+                            && RecipeUtils.areInputsMatch(RecipeUtils.toEIOInputsNN(r.getInputs()), targetInputs)) {
+                        removed = true;
+                    } else {
+                        AlloySmelterRecipes.addRecipeToLookup(newLookup, r);
+                        valid.add(r);
+                    }
                 }
-            }
-            if (removed) {
-                AlloySmelterRecipe.commitChanges(newLookup, valid);
+                if (removed) {
+                    AlloySmelterRecipes.commitChanges(newLookup, valid);
+                }
             }
         }
 
@@ -95,17 +97,17 @@ public class AlloySmelterCallbacks {
         if (backup == null || backup.isEmpty())
             return;
 
-        List<IManyToOneRecipe> current = AlloySmelterRecipe.getAlloyRecipes();
-        TriItemLookup<IManyToOneRecipe> lookup = AlloySmelterRecipe.createLookup();
+        List<IManyToOneRecipe> current = AlloySmelterRecipes.getAlloyRecipes();
+        TriItemLookup<IManyToOneRecipe> lookup = AlloySmelterRecipes.createLookup();
         List<IManyToOneRecipe> valid = new ArrayList<>(current);
 
         for (IManyToOneRecipe r : current)
-            AlloySmelterRecipe.addRecipeToLookup(lookup, r);
+            AlloySmelterRecipes.addRecipeToLookup(lookup, r);
 
         for (IManyToOneRecipe r : backup) {
-            AlloySmelterRecipe.addRecipeToLookup(lookup, r);
+            AlloySmelterRecipes.addRecipeToLookup(lookup, r);
             valid.add(r);
         }
-        AlloySmelterRecipe.commitChanges(lookup, valid);
+        AlloySmelterRecipes.commitChanges(lookup, valid);
     }
 }

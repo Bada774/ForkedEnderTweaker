@@ -7,7 +7,7 @@ import crazypants.enderio.base.fluid.FluidFuelRegister;
 import crazypants.enderio.base.fluid.IFluidCoolant;
 import crazypants.enderio.base.fluid.IFluidFuel;
 
-public class CombustionGenRecipe {
+public class CombustionGenRecipes {
 
     private static Map<String, IFluidFuel> fuels;
     private static Map<String, IFluidCoolant> coolants;
@@ -19,7 +19,7 @@ public class CombustionGenRecipe {
             coolants = ObfuscationReflectionHelper.getPrivateValue(FluidFuelRegister.class, FluidFuelRegister.instance,
                     "coolants");
         } catch (Exception e) {
-            throw new RuntimeException("Failed to initialize AlloySmelter reflection helpers: ", e);
+            throw new RuntimeException("Failed to initialize AlloySmelter reflection helpers:\n", e);
         }
     }
 

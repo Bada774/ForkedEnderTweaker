@@ -5,12 +5,13 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 
+import bada774.endertweaker.utils.Logging;
+
 import crazypants.enderio.base.recipe.alloysmelter.AlloyRecipeManager;
 import crazypants.enderio.base.recipe.IManyToOneRecipe;
 import crazypants.enderio.base.recipe.lookup.TriItemLookup;
-import crafttweaker.CraftTweakerAPI;
 
-public class AlloySmelterRecipe {
+public class AlloySmelterRecipes {
 
     private static final Field lookupField;
     private static final Method addRecipeMethod;
@@ -24,7 +25,7 @@ public class AlloySmelterRecipe {
                     TriItemLookup.class, IManyToOneRecipe.class);
             addRecipeMethod.setAccessible(true);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to initialize AlloySmelter reflection helpers: ", e);
+            throw new RuntimeException("Failed to initialize AlloySmelter reflection helpers:\n", e);
         }
 
     }
@@ -33,7 +34,7 @@ public class AlloySmelterRecipe {
         List<IManyToOneRecipe> alloySmelterRecipes = AlloyRecipeManager.getInstance().getRecipes();
         if (!alloySmelterRecipes.isEmpty())
             return alloySmelterRecipes;
-        CraftTweakerAPI.logError("AlloyRecipeManager returned null recipe list!");
+        Logging.logError("AlloyRecipeManager returned null recipe list!");
         return Collections.emptyList();
     }
 
@@ -45,7 +46,7 @@ public class AlloySmelterRecipe {
         try {
             addRecipeMethod.invoke(null, lookup, recipe);
         } catch (Exception e) {
-            CraftTweakerAPI.logError("Error adding recipe to new lookup via reflection:\n", e);
+            Logging.logError("Error adding recipe to new lookup via reflection:\n" + e);
             e.printStackTrace();
         }
     }
@@ -62,7 +63,7 @@ public class AlloySmelterRecipe {
             }
 
         } catch (Exception e) {
-            CraftTweakerAPI.logError("Failed to commit Alloy Smelter changes:\n", e);
+            Logging.logError("Failed to commit Alloy Smelter changes:\n" + e);
             e.printStackTrace();
         }
     }
