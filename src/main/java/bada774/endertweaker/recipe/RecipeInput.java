@@ -1,12 +1,12 @@
-package shadows.endertweaker.recipe;
+package bada774.endertweaker.recipe;
+
+import javax.annotation.Nonnull;
 
 import crafttweaker.CraftTweakerAPI;
 import crazypants.enderio.base.recipe.IRecipeInput;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
-
-import javax.annotation.Nonnull;
 
 public class RecipeInput implements IRecipeInput {
 
@@ -15,7 +15,7 @@ public class RecipeInput implements IRecipeInput {
 	public RecipeInput(Ingredient ing) {
 		this.ing = ing;
 		if (ing.getMatchingStacks().length == 0) {
-			CraftTweakerAPI.logInfo("EnderTweaker received an empty ingredient. This may cause problems.");
+			CraftTweakerAPI.logInfo("FET received an empty ingredient\nThis may cause problems");
 			CraftTweakerAPI.logInfo(ing.toString());
 		}
 	}
