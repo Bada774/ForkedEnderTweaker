@@ -1,25 +1,3 @@
-<style>
-#note {
-    font-style: italic;
-}
-
-#source-variable_code {
-    color: coral;
-    font-style: italic;
-}
-
-#own-variable_code {
-    color: mediumseagreen;
-    font-weight: bold;
-}
-
-#additional-variable_code {
-    color: darkgoldenrod;
-    font-style: italic;
-    font-weight: bold;
-}
-</style>
-
 <h1 align="center">FET - Forked Ender Tweaker</h1>
 
 <h3 align="center">FET is a fork of the original <a href="https://www.curseforge.com/minecraft/mc-mods/endertweaker">EnderTweaker</a> by Shadows_of_Fire</h3>
@@ -183,14 +161,14 @@ The logic is based on **Heat Balance**. Burning fuel generates Heat. The Coolant
 
 #### Basic understanding of Combustion Generator Mechanics:
 
-_(Note: Variables marked as $\color{red}{\textsf{lorem ipsum}}$<code id="own-variable_code">variable</code> are variables you set in your ZenScript script.  
-Variables marked as <code id="source-variable_code">variable</code> are derived from EnderIO's source code)._
+_(Note: Variables marked as_ _<code id="own-variable_code">variable</code>_ _are variables you set in your ZenScript script._  
+_Variables marked as_ **<code id="source-variable_code">variable</code>** _are derived from EnderIO's source code)._
 
 <h5 id="combustion_multipliers">1. Capacitor & Machine Modifiers</h5>
 
 Machine and capacitor tier multipliers can be configured however you want via EnderIO XML recipe configs. All of them have a base value and a scaler type (which declares what the math will do with the base value). For the Combustion Generator, we generally have the following final multipliers:
 
-- **Capacitor Quality Multiplier** (<code id="source-variable_code">capQuality</code>):
+- **Capacitor Quality Multiplier** (**<code id="source-variable_code">capQuality</code>**):
 
     The basic config declares for Normal and Enhanced Combustion Gens:
 
@@ -206,7 +184,7 @@ Machine and capacitor tier multipliers can be configured however you want via En
 
     _(Note: For custom capacitors or those from add-ons, you need to use the same scaler and their respective level values)._
 
-- **Machine Quality** (<code id="source-variable_code">machineQuality</code>):
+- **Machine Quality** (**<code id="source-variable_code">machineQuality</code>**):
 
     Basic config declares:
 
@@ -220,15 +198,15 @@ Machine and capacitor tier multipliers can be configured however you want via En
 
 <h5 id="energy_per_tick">2. Energy Generation (µI/t)</h5>
 
-**Formula:** <code id="source-variable_code">energyPerTick</code> = Math.round(<code id="own-variable_code">powerPerCycle</code> \* <code id="source-variable_code">capQuality</code> \* <code id="source-variable_code">machineQuality</code>)
+**Formula:** **<code id="source-variable_code">energyPerTick</code>** = Math.round(<i><code id="own-variable_code">powerPerCycle</code></i> \* **<code id="source-variable_code">capQuality</code>** \* **<code id="source-variable_code">machineQuality</code>**)
 
 <h5>3. Fuel Duration (t/mB)</h5>
 
 Determines how many ticks 1 mB of fuel lasts. Higher capacitor tiers burn fuel faster to maintain higher power output.
 
 <ul id="ticks_per_fuel">
-<li><code id="own-variable_code">totalBurnTime</code> = Total ticks per 1000 mB (set in script).</li>
-<li><b>Formula:</b> <code id="source-variable_code">ticksPerFuel</code> = <code>Math.max((int)(<code id="own-variable_code">totalBurnTime</code> / <code id="source-variable_code">capQuality</code> / 1000.0F), 1)</code></li>
+<li><i><code id="own-variable_code">totalBurnTime</code></i> = Total ticks per 1000 mB (set in script).</li>
+<li><b>Formula:</b> <b><code id="source-variable_code">ticksPerFuel</code></b> = <code>Math.max((int)(<i><code id="own-variable_code">totalBurnTime</code></i> / <b><code id="source-variable_code">capQuality</code></b> / 1000.0F), 1)</code></li>
 </ul>
 
 <h5 id="ticks_per_coolant">4. Coolant Duration (t/mB)</h5>
@@ -239,7 +217,7 @@ The machine produces heat based on energy generation.
 
     How much heat 1 mB of fluid can remove.
 
-    <code><code id="source-variable_code">cooling</code> = (373.25 - <code id="additional-variable_code">Fluid_Temp_K</code>) \* <code id="own-variable_code">degreesCoolingPerMB</code></code>
+    <code><b><code id="source-variable_code">cooling</code></b> = (373.25 - <code id="additional-variable_code">Fluid_Temp_K</code>) \* <i><code id="own-variable_code">degreesCoolingPerMB</code></i></code>
 
     <code id="additional-variable_code">Fluid_Temp_K</code> = the liquid's temperature, which can be found by running the `/ct liquids`command. All registered liquids and their properties will be written to the `crafttweaker.log` file.
 
@@ -247,11 +225,11 @@ The machine produces heat based on energy generation.
 
     Heat per µI Constant: **0.000115**.
 
-    <code><code id="source-variable_code">toCool</code> = <code id="source-variable_code">energyPerTick</code> \* <code id="source-variable_code">machineQuality</code> \* 0.000115</code>
+    <code><b><code id="source-variable_code">toCool</code></b> = <b><code id="source-variable_code">energyPerTick</code></b> \* <b><code id="source-variable_code">machineQuality</code></b> \* 0.000115</code>
 
 - **C. Final Duration (t/mB):**
 
-    <code><code id="source-variable_code">ticksPerCoolant</code> = Math.max((int)Math.round(<code id="source-variable_code">cooling</code> / <code id="source-variable_code">toCool</code>), 1)</code>
+    <code><b><code id="source-variable_code">ticksPerCoolant</code></b> = Math.max((int)Math.round(<b><code id="source-variable_code">cooling</code></b> / <b><code id="source-variable_code">toCool</code></b>), 1)</code>
 
 #### Example Calculation (What GUI will show)
 
@@ -340,28 +318,28 @@ The Enchanter allows creating Enchanted Books by combining a specific input item
 
 Recipes in the Enchanter are defined per Enchantment. The cost of creating a book is dynamic and scales linearly with the Level of the enchantment you select. It is based on the default vanilla XP enchantability and a few scalers.
 
-_(Note: Variables marked as <code id="own-variable_code">variable</code> are variables you set in your ZenScript script.  
-Variables marked as <code id="source-variable_code">variable</code> are derived from EnderIO's source code)._
+_(Note: Variables marked as_ _<code id="own-variable_code">variable</code>_ _are variables you set in your ZenScript script._  
+_Variables marked as_ **<code id="source-variable_code">variable</code>** _are derived from EnderIO's source code)._
 
 - **Item Cost:**
 
     A simple calculation: it multiplies the required amount of items per level by the target level.
 
-    <code><code>itemsNeeded</code> = <code>targetLevel</code> \* <code id="own-variable_code">amountPerLevel</code></code>
-    Example: If <code id="own-variable_code">amountPerLevel</code> is 2, crafting a Level V (5) book requires 10 items.
+    <code><code>itemsNeeded</code> = <code>targetLevel</code> \* <i><code id="own-variable_code">amountPerLevel</code></i></code>
+    Example: If _<code id="own-variable_code">amountPerLevel</code>_ is 2, crafting a Level V (5) book requires 10 items.
 
     _(Note: Be careful with the amount of items. If it exceeds the maximum stack size of the required item (e.g., 64 for most resources), higher levels of the enchantment will become uncraftable, even if the maximum possible level for this enchantment is not reached. However, this can also be used as a deliberate limitation.)_
 
 - **XP Cost:**
 
-    Depends on the enchantment's native rarity, the <code id="own-variable_code">costMultiplier</code>, and the config's <code id="source-variable_code">levelCostFactor</code> and <code id="source-variable_code">baseLevelCost</code> (Below is pseudocode for easier understanding):
+    Depends on the enchantment's native rarity, the _<code id="own-variable_code">costMultiplier</code>_, and the config's **<code id="source-variable_code">levelCostFactor</code>** and **<code id="source-variable_code">baseLevelCost</code>** (Below is pseudocode for easier understanding):
 
-    <pre>min = Math.max(1, <code id="additional-variable_code">minEnchantability</code>);<br>min = min * <code id="own-variable_code">costMultiplier</code>;<br>cost = (int)Math.round(min * <code id="source-variable_code">levelCostFactor</code>);<br>cost = cost + (int)<code id="source-variable_code">baseLevelCost</code>;<br>return cost;</pre>
+    <pre>min = Math.max(1, <code id="additional-variable_code">minEnchantability</code>);<br>min = min * <i><code id="own-variable_code">costMultiplier</code></i>;<br>cost = (int)Math.round(min * <b><code id="source-variable_code">levelCostFactor</code></b>);<br>cost = cost + (int)<b><code id="source-variable_code">baseLevelCost</code></b>;<br>return cost;</pre>
 
     _(Note 1: <code id="additional-variable_code">minEnchantability</code> can be found by procceding CraftTweaker's <a href="https://docs.blamejared.com/1.12/en/Vanilla/Enchantments/IEnchantmentDefinition/#getenchantability"><code>getMinEnchantability(int level)</code></a> function)._
 
-    _(Note 2: A  <code id="own-variable_code">costMultiplier</code> multiplier of 1.0 uses standard EnderIO math. Higher values make the recipe more expensive in levels.  
-    By default <code id="source-variable_code">levelCostFactor</code> = 0.75 and <code id="source-variable_code">baseLevelCost</code> = 2.0)._
+    _(Note 2: A_  _<code id="own-variable_code">costMultiplier</code>_ _multiplier of 1.0 uses standard EnderIO math. Higher values make the recipe more expensive in levels.  
+    By default_ **<code id="source-variable_code">levelCostFactor</code>**_= 0.75 and_ **<code id="source-variable_code">baseLevelCost</code>** _= 2.0)._
 
 #### Example Calculation
 
@@ -421,9 +399,12 @@ Enchanter.removeRecipe(<enchantment:minecraft:protection>);
 
 Crushes items to produce dusts and byproducts. This machine is heavily affected by **Grinding Balls**.
 
+_(Note: Variables marked as_ _<code id="own-variable_code">variable</code>_ _are variables you set in your ZenScript script._  
+_Variables marked as_ **<code id="source-variable_code">variable</code>** _are derived from EnderIO's source code)._
+
 - **Bonus Type Behavior:**
 
-    How Grinding Balls affect this specific recipe (defined by <code id="own-variable_code">bonusType</code>):
+    How Grinding Balls affect this specific recipe (defined by _<code id="own-variable_code">bonusType</code>_):
     - `NONE` - Grinding balls have no effect.
     - `MULTIPLY_OUTPUT` - Ball multiplies the amount of the main output.
     - `CHANCE_ONLY` - Ball only boosts the chance of secondary/tertiary output.
@@ -624,7 +605,7 @@ The Vat is a fluid brewing machine. It ferments a base input fluid along with tw
 
     <code><code id="source-variable_code">Input Fluid Volume</code> = <code id="source-variable_code">Ingredient Multiplier</code> *  1000</code>
 
-    <code><code id="source-variable_code">Output Fluid Volume</code> = <code id="alternative-variable_code">Ingredient Multiplier</code> * <code id="own-variable_code">inMult</code> *  1000</code>
+    <code><code id="source-variable_code">Output Fluid Volume</code> = <code id="alternative-variable_code">Ingredient Multiplier</code> * <i><code id="own-variable_code">inMult</code></i> *  1000</code>
 
 <pre><code>// Scenario: You're adding a recipe for brewing lava from water. As items you're using Coal + Flint and Steel:
 
@@ -700,6 +681,9 @@ Vat.removeRecipe(<liquid:hootch>);
 The Fluid Tank is not only for storage but also functions as a simple processing machine. It can either consume fluids from the tank to modify an item (Filling the item) or extract fluids from an item to fill the tank (Emptying the item).
 
 #### Basic understanding of Tank Mechanics:
+
+_(Note: Variables marked as_ _<code id="own-variable_code">variable</code>_ _are variables you set in your ZenScript script._  
+_Variables marked as_ **<code id="source-variable_code">variable</code>** _are derived from EnderIO's source code)._
 
 - **The <code id="own-variable_code">fill</code> boolean:**
     This parameter dictates the direction of the fluid transfer:
