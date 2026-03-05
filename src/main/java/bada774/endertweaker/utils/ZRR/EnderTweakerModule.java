@@ -1,14 +1,13 @@
-package bada774.endertweaker.utils.ZRR;
+package bada774.endertweaker.utils.zrr;
 
-import bada774.endertweaker.utils.ZRR.callbacks.AlloySmelterCallbacks;
-import bada774.endertweaker.utils.ZRR.callbacks.CombustionGenCallbacks;
-import bada774.endertweaker.utils.ZRR.callbacks.EnchanterCallbacks;
-import bada774.endertweaker.utils.ZRR.callbacks.SagMillCallbacks;
-import bada774.endertweaker.utils.ZRR.callbacks.SliceNSpliceCallbacks;
-import bada774.endertweaker.utils.ZRR.callbacks.SoulBinderCallbacks;
-import bada774.endertweaker.utils.ZRR.callbacks.TankCallbacks;
-import bada774.endertweaker.utils.ZRR.callbacks.VatCallbacks;
-
+import bada774.endertweaker.utils.zrr.callbacks.AlloySmelterCallbacks;
+import bada774.endertweaker.utils.zrr.callbacks.CombustionGenCallbacks;
+import bada774.endertweaker.utils.zrr.callbacks.EnchanterCallbacks;
+import bada774.endertweaker.utils.zrr.callbacks.SagMillCallbacks;
+import bada774.endertweaker.utils.zrr.callbacks.SliceNSpliceCallbacks;
+import bada774.endertweaker.utils.zrr.callbacks.SoulBinderCallbacks;
+import bada774.endertweaker.utils.zrr.callbacks.TankCallbacks;
+import bada774.endertweaker.utils.zrr.callbacks.VatCallbacks;
 import youyihj.zenrecipereloading.module.PlainModule;
 
 public class EnderTweakerModule extends PlainModule {

@@ -3,7 +3,7 @@ package bada774.endertweaker;
 import java.util.Arrays;
 
 import bada774.endertweaker.recipe.RecipeInput;
-import bada774.endertweaker.recipe.machines.SagMillRecipes;
+import bada774.endertweaker.recipe.machines.SagMillRecipe;
 import bada774.endertweaker.utils.LateAction;
 import bada774.endertweaker.utils.Logging;
 import bada774.endertweaker.utils.RecipeUtils;
@@ -124,7 +124,8 @@ public class SagMill {
 						ITEM_TYPE, logName, ITEM_TYPE));
 				return;
 			}
-			this.createdRecipe = new SagMillRecipes(eioInput, energyCost, bonusType, RecipeLevel.IGNORE, output);
+
+			this.createdRecipe = new SagMillRecipe(eioInput, energyCost, bonusType, RecipeLevel.IGNORE, output);
 
 			SagMillRecipeManager.getInstance().addRecipe(this.createdRecipe);
 
@@ -167,7 +168,8 @@ public class SagMill {
 		}
 	}
 
-	private static boolean hasErrors(IItemStack[] output, float[] chances, IIngredient input, float[] xp, String type,
+	private static boolean hasErrors(IItemStack[] output, float[] chances, IIngredient input, float[] xp,
+			String bonusType,
 			String methodName) {
 		if (ValidationUtils.isInvalid(output) || ValidationUtils.isInvalid(chances) || ValidationUtils.isInvalid(xp)) {
 			Logging.logValidationError(MACHINE_NAME, methodName,
@@ -189,10 +191,10 @@ public class SagMill {
 			return true;
 		}
 		try {
-			RecipeBonusType.valueOf(Strings.isNullOrEmpty(type) ? "NONE" : type);
+			RecipeBonusType.valueOf(Strings.isNullOrEmpty(bonusType) ? "NONE" : bonusType);
 		} catch (IllegalArgumentException e) {
 			Logging.logValidationError(MACHINE_NAME, methodName, String.format(
-					"Invalid bonus type: %s\nValid values: NONE, MULTIPLY_OUTPUT, CHANCE_ONLY", type));
+					"Invalid bonus type: %s\nValid values: NONE, MULTIPLY_OUTPUT, CHANCE_ONLY", bonusType));
 			return true;
 		}
 		return false;

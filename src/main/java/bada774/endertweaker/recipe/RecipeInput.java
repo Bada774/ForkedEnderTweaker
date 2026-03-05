@@ -73,7 +73,7 @@ public class RecipeInput implements IRecipeInput {
 
 	@Override
 	public boolean isValid() {
-		return true;
+		return ing != null && ing.getMatchingStacks().length > 0;
 	}
 
 	@Override

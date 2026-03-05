@@ -15,8 +15,6 @@ public class EnderTweaker {
 	public static final String MODID = "endertweaker";
 	public static final String MODNAME = "ForkedEnderTweaker";
 	public static final String VERSION = "2.0.1";
-	public static final List<Runnable> ADDITIONS = new ArrayList<>();
-	public static final List<Runnable> REMOVALS = new ArrayList<>();
 
 	public static final List<Runnable> LATE_QUEUE = new ArrayList<>();
 	public static boolean LOAD_COMPLETE = false;
@@ -25,7 +23,7 @@ public class EnderTweaker {
 	public void preinit(FMLPreInitializationEvent e) {
 		if (Loader.isModLoaded("zenrecipereloading")) {
 			try {
-				bada774.endertweaker.utils.ZRR.ZRRIntegration.register();
+				bada774.endertweaker.utils.zrr.ZRRIntegration.register();
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}

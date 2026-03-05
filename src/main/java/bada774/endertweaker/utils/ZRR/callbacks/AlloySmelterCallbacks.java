@@ -1,4 +1,4 @@
-package bada774.endertweaker.utils.ZRR.callbacks;
+package bada774.endertweaker.utils.zrr.callbacks;
 
 import java.util.ArrayList;
 import java.util.List;

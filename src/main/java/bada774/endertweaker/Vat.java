@@ -82,11 +82,11 @@ public class Vat {
 			this.logName = this.output.getLocalizedName();
 		}
 
-		private String checkConflict() {
+		private String checkConflict(VatRecipe newRecipe) {
 			for (IRecipe existing : VatRecipeManager.getInstance().getRecipes()) {
 				if (existing == null)
 					continue;
-				if (VatRecipeUtils.isDuplicate(existing, this.createdRecipe)) {
+				if (VatRecipeUtils.isDuplicate(existing, newRecipe)) {
 					if (existing.getOutputs() != null
 							&& existing.getOutputs().length > 0
 							&& existing.getOutputs()[0].getFluidOutput() != null) {
@@ -104,18 +104,19 @@ public class Vat {
 					slot2Solids, slot2Mults);
 			RecipeOutput out = new RecipeOutput(output);
 			Recipe baseRecipe = new Recipe(out, energyCost, RecipeBonusType.NONE, RecipeLevel.IGNORE, inArray);
-			this.createdRecipe = new VatRecipe(baseRecipe);
+			VatRecipe newRecipe = new VatRecipe(baseRecipe);
 
-			String conflictingName = checkConflict();
+			String conflictingName = checkConflict(newRecipe);
 
 			if (conflictingName != null) {
 				Logging.logValidationError(MACHINE_NAME, METHOD_ADD_RECIPE,
 						String.format(
 								"Failed to add %s for: %s\nA %s already exists for these exact inputs!\nConflicting %s output: %s",
 								ITEM_TYPE, logName, ITEM_TYPE, ITEM_TYPE, conflictingName));
-				this.createdRecipe = null;
 				return;
 			}
+
+			this.createdRecipe = newRecipe;
 
 			VatRecipeManager.getInstance().addRecipe(this.createdRecipe);
 			Logging.logAddition(MACHINE_NAME, METHOD_ADD_RECIPE, ITEM_TYPE, logName);
@@ -148,6 +149,7 @@ public class Vat {
 
 			for (IRecipe recipe : recipes) {
 				if (recipe != null
+						&& recipe.getOutputs()[0] != null
 						&& recipe.getOutputs()[0].getFluidOutput() != null
 						&& recipe.getOutputs()[0].getFluidOutput().isFluidEqual(output)) {
 					backupRecipes.add(recipe);

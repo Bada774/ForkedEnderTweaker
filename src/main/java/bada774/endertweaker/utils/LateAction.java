@@ -11,6 +11,7 @@ public abstract class LateAction implements IAction {
             try {
                 execute();
             } catch (Exception e) {
+                Logging.logError("Unhandled exception during action execution:\n" + e);
                 e.printStackTrace();
             }
         } else {
@@ -18,6 +19,7 @@ public abstract class LateAction implements IAction {
                 try {
                     execute();
                 } catch (Exception e) {
+                    Logging.logError("Unhandled exception during action execution:\n" + e);
                     e.printStackTrace();
                 }
             });

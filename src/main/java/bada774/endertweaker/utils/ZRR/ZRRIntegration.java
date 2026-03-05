@@ -1,5 +1,5 @@
 
-package bada774.endertweaker.utils.ZRR;
+package bada774.endertweaker.utils.zrr;
 
 import youyihj.zenrecipereloading.module.ModuleRegistry;
 

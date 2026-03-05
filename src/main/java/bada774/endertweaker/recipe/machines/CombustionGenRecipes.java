@@ -19,7 +19,7 @@ public class CombustionGenRecipes {
             coolants = ObfuscationReflectionHelper.getPrivateValue(FluidFuelRegister.class, FluidFuelRegister.instance,
                     "coolants");
         } catch (Exception e) {
-            throw new RuntimeException("Failed to initialize AlloySmelter reflection helpers:\n", e);
+            throw new RuntimeException("Failed to initialize CombustionGenRecipes reflection helpers:\n", e);
         }
     }
 

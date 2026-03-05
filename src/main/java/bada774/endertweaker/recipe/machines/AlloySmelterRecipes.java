@@ -32,10 +32,11 @@ public class AlloySmelterRecipes {
 
     public static List<IManyToOneRecipe> getAlloyRecipes() {
         List<IManyToOneRecipe> alloySmelterRecipes = AlloyRecipeManager.getInstance().getRecipes();
-        if (!alloySmelterRecipes.isEmpty())
-            return alloySmelterRecipes;
-        Logging.logError("AlloyRecipeManager returned null recipe list!");
-        return Collections.emptyList();
+        if (alloySmelterRecipes == null) {
+            Logging.logError("AlloyRecipeManager returned a null recipe list!");
+            return Collections.emptyList();
+        }
+        return alloySmelterRecipes;
     }
 
     public static TriItemLookup<IManyToOneRecipe> createLookup() {

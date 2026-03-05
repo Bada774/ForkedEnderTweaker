@@ -81,9 +81,9 @@ public class SliceNSplice {
 			}
 		}
 
-		private String checkConflict() {
+		private String checkConflict(ManyToOneRecipe newRecipe) {
 			for (IManyToOneRecipe recipe : SliceAndSpliceRecipeManager.getInstance().getRecipes()) {
-				if (recipe != null && isDuplicate(recipe, this.createdRecipe)) {
+				if (recipe != null && isDuplicate(recipe, newRecipe)) {
 					return RecipeUtils.getConflictingOutputName(recipe.getOutput());
 				}
 			}
@@ -118,17 +118,19 @@ public class SliceNSplice {
 		@Override
 		public void execute() {
 			RecipeOutput out = new RecipeOutput(output, 1, xp);
-			this.createdRecipe = new ManyToOneRecipe(out, energyCost, RecipeBonusType.NONE, RecipeLevel.IGNORE, inputs);
+			ManyToOneRecipe newRecipe = new ManyToOneRecipe(out, energyCost, RecipeBonusType.NONE, RecipeLevel.IGNORE,
+					inputs);
 
-			String conflictingName = checkConflict();
+			String conflictingName = checkConflict(newRecipe);
 
 			if (conflictingName != null) {
 				Logging.logValidationError(MACHINE_NAME, METHOD_ADD_RECIPE, String.format(
 						"Failed to add %s for: %s\nA %s already exists for these exact inputs!\nConflicting %s output: %s",
 						ITEM_TYPE, logName, ITEM_TYPE, ITEM_TYPE, conflictingName));
-				this.createdRecipe = null;
 				return;
 			}
+
+			this.createdRecipe = newRecipe;
 
 			SliceAndSpliceRecipeManager.getInstance().addRecipe(this.createdRecipe);
 			Logging.logAddition(MACHINE_NAME, METHOD_ADD_RECIPE, ITEM_TYPE, logName);
@@ -180,7 +182,7 @@ public class SliceNSplice {
 		}
 	}
 
-	public static boolean hasErrors(IItemStack output, IIngredient[] input, String methodName) {
+	private static boolean hasErrors(IItemStack output, IIngredient[] input, String methodName) {
 		if (ValidationUtils.isInvalid(output)) {
 			Logging.logValidationError(MACHINE_NAME, methodName, "Invalid output: empty or null");
 			return true;

@@ -67,18 +67,18 @@ public class Tank {
 
 		public TankMachineRecipe createdRecipe;
 
-		private final String FILLING_MODE;
+		private final String fillingMode;
 
 		public AddRecipeAction(boolean fill, IIngredient input, ILiquidStack fluid, IItemStack output) {
 			this.fill = fill;
 			this.input = input;
 			this.fluid = CraftTweakerMC.getLiquidStack(fluid);
 			this.output = output != null ? CraftTweakerMC.getItemStack(output) : ItemStack.EMPTY;
-			this.FILLING_MODE = fill ? "Filling" : "Emptying";
+			this.fillingMode = fill ? "Filling" : "Emptying";
 
 			String outName = output != null ? output.getDisplayName() : "None (Consumed)";
 			this.logName = String.format("%s (Fluid: %s, Mode: %s)", outName, this.fluid.getLocalizedName(),
-					FILLING_MODE);
+					fillingMode);
 
 		}
 
@@ -149,12 +149,12 @@ public class Tank {
 			if (conflictingName != null) {
 				Logging.logValidationError(MACHINE_NAME, METHOD_ADD_RECIPE, String.format(
 						"Failed to add %s for: %s\nA %s already exists for this exact input and fluid in %s mode!\nConflicting %s output: %s",
-						ITEM_TYPE, logName, ITEM_TYPE, FILLING_MODE, ITEM_TYPE, conflictingName));
+						ITEM_TYPE, logName, ITEM_TYPE, fillingMode, ITEM_TYPE, conflictingName));
 				return;
 			}
 
 			Things inThing = new Things().add(new NNList<>(CraftTweakerMC.getIngredient(input).getMatchingStacks()));
-			Things outThing = new Things().add(output);
+			Things outThing = new Things();
 			if (!this.output.isEmpty()) {
 				outThing.add(this.output);
 			}
@@ -163,7 +163,7 @@ public class Tank {
 			if (input != null && input.getItems() != null && !input.getItems().isEmpty()) {
 				inputDisplayName = input.getItems().get(0).getDisplayName();
 			}
-			String uid = String.format("FET_Tank: %s, %s with %s", inputDisplayName, FILLING_MODE,
+			String uid = String.format("FET_Tank: %s, %s with %s", inputDisplayName, fillingMode,
 					fluid.getLocalizedName());
 
 			this.createdRecipe = new TankMachineRecipe(uid, fill, inThing, fluid, outThing, Logic.NONE,
@@ -177,7 +177,7 @@ public class Tank {
 
 		@Override
 		public String describe() {
-			return String.format("Adding %s %s %s for: %s", MACHINE_NAME, FILLING_MODE, ITEM_TYPE, logName);
+			return String.format("Adding %s %s %s for: %s", MACHINE_NAME, fillingMode, ITEM_TYPE, logName);
 		}
 
 	}
@@ -191,17 +191,17 @@ public class Tank {
 
 		public List<IMachineRecipe> backupRecipes = new ArrayList<>();
 
-		private final String FILLING_MODE;
+		private final String fillingMode;
 
 		public RemoveRecipeAction(boolean fill, IItemStack input, ILiquidStack fluid) {
 			this.fill = fill;
 			this.inputStack = CraftTweakerMC.getItemStack(input);
 			this.fluid = fluid != null ? CraftTweakerMC.getLiquidStack(fluid) : null;
-			this.FILLING_MODE = fill ? "Filling" : "Emptying";
+			this.fillingMode = fill ? "Filling" : "Emptying";
 
 			String fluidDesc = fluid != null ? this.fluid.getLocalizedName() : "Any Fluid";
 			this.logName = String.format("Input: %s (Fluid: %s, Mode: %s)", input.getDisplayName(), fluidDesc,
-					FILLING_MODE);
+					fillingMode);
 		}
 
 		@Override
@@ -249,7 +249,7 @@ public class Tank {
 
 		@Override
 		public String describe() {
-			return String.format("Removing %s %s %s for: %s", MACHINE_NAME, FILLING_MODE, ITEM_TYPE, logName);
+			return String.format("Removing %s %s %s for: %s", MACHINE_NAME, fillingMode, ITEM_TYPE, logName);
 		}
 	}
 
