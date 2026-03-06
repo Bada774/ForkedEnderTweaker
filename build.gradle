@@ -10,8 +10,8 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 
-version = "1.12.2-2.0.1"
-group = "bada774.forkedendertweaker"
+version = "1.12.2-${mod_version}"
+group = "bada774.fet"
 archivesBaseName = "ForkedEnderTweaker"
 
 sourceCompatibility = targetCompatibility = "1.8"
