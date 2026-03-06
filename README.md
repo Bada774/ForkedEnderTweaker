@@ -1,6 +1,6 @@
 <h1 align="center">FET - Forked Ender Tweaker</h1>
 
-<h3 align="center">FET is a fork of the original <a href="https://github.com/Shadows-of-Fire/EnderTweaker">EnderTweaker</a> by Shadows_of_Fire</h3>
+<h3 align="center">FET is a fork of the original <a href="https://www.curseforge.com/minecraft/mc-mods/endertweaker">EnderTweaker</a> by Shadows_of_Fire</h3>
 
 <h4 align="center">
 An interface between EnderIO and CraftTweaker.<br><br>

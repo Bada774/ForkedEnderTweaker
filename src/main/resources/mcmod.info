@@ -6,10 +6,10 @@
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
-  "updateUrl": "",
+  "updateUrl": "https://github.com/Bada774/ForkedEnderTweaker",
   "authorList": ["Bada774"],
   "credits": "\nOriginal EnderTweaker by Shadows_of_Fire\n\nZenRecipeReloading by youyihj\n",
-  "logoFile": "",
+  "logoFile": "logo.png",
   "screenshots": [],
   "dependencies": []
 }
