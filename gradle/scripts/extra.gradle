@@ -1,0 +1,28 @@
+// You may write any gradle buildscript component in this file
+// This file is automatically applied after build.gradle + dependencies.gradle is ran
+
+// If you wish to use the default helper methods, uncomment the line below
+// apply from: 'gradle/scripts/helpers.gradle'
+configurations {
+    runMods
+}
+
+dependencies {
+    runMods("curse.maven:endercore-0.5.78-231868:4671384") { transitive = false }
+    runMods("curse.maven:enderio-5.3.72-64578:4674244") { transitive = false }
+    runMods("curse.maven:crafttweaker2-239197:7406648") { transitive = false }
+}
+
+tasks.register('downloadRunMods', Copy) {
+    description = 'Downloads required mods into run/mods/ for the dev environment'
+    from configurations.runMods
+    into 'run/mods'
+}
+
+tasks.named('runClient') {
+    dependsOn 'downloadRunMods'
+}
+
+tasks.named('runServer') {
+    dependsOn 'downloadRunMods'
+}

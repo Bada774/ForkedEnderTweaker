@@ -1,0 +1,57 @@
+apply from: 'gradle/scripts/helpers.gradle'
+
+repositories {
+    maven {
+        name 'BlameJared'
+        url 'https://maven.blamejared.com'
+    }
+    maven {
+        name 'JEI'
+        url 'https://dvs1.progwml6.com/files/maven'
+    }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name 'CurseMaven'
+                url 'https://cursemaven.com'
+            }
+        }
+        filter {
+            includeGroup 'curse.maven'
+        }
+    }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name 'Modrinth'
+                url 'https://api.modrinth.com/maven'
+            }
+        }
+        filter {
+            includeGroup 'maven.modrinth'
+        }
+    }
+    mavenLocal()
+}
+
+dependencies {
+    // Include StripLatestForgeRequirements by default for the dev env, saves everyone a hassle
+    runtimeOnly('com.cleanroommc:strip-latest-forge-requirements:1.0') { transitive = false }
+    runtimeOnly('com.cleanroommc:osxnarratorblocker:1.0') { transitive = false }
+
+
+    compileOnly "curse.maven:enderio-5.3.72-64578:4674244"
+    compileOnly "curse.maven:endercore-0.5.78-231868:4671384"
+
+    compileOnly "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.+"
+
+    implementation rfg.deobf("mezz.jei:jei_1.12.2:+")
+    implementation rfg.deobf("curse.maven:zenrecipereloading-1.4.5-911152:6024502")
+
+    implementation rfg.deobf("curse.maven:the-one-probe-245211:2667280")
+    implementation rfg.deobf("curse.maven:zenutils-1.26.14-401178:7498338")
+    runtimeOnly ("curse.maven:mixinbooter-10.7-419286:7049694")
+    runtimeOnly ("curse.maven:configanytime-3.0-870276:5212709")
+    runtimeOnly ("curse.maven:modtweaker-220954:3840577")
+    runtimeOnly ("curse.maven:mtlib-253211:3308160")
+}

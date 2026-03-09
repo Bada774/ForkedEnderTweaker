@@ -739,6 +739,16 @@ Tank.removeRecipe(false, <minecraft:experience_bottle>);
 - `input` ([IIngredient](https://docs.blamejared.com/1.12/en/Vanilla/Variable_Types/IIngredient)) - the **input item** of the recipe you want to remove.
 - `fluid` ([ILiquidStack](https://docs.blamejared.com/1.12/en/Vanilla/Liquids/ILiquidStack"), optional) - The specific fluid to match. If omitted, removes all recipes for the given input.
 
+</details>
+
 ---
 
-</details>
+## 🤝 Contributing
+
+Contributions are welcome! If you've found a bug, or want to improve existing functionality, feel free to open an issue or a pull request.
+
+**To set up the dev environment:**
+1. Clone the repo
+2. Make sure `JAVA_HOME` points to JDK 17 or newer (JDK 8 is used for compilation automatically via Gradle toolchains)
+3. Run `./gradlew runClient` — Gradle will download all required dependencies on first launch
+
