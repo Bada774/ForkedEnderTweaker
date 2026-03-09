@@ -3,35 +3,50 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-      - name: Set up Java 25
+      - name: Grant Execute Permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Read gradle.properties
+        uses: BrycensRanch/read-properties-action@v1
+        id: properties
+        with:
+          file: gradle.properties
+          all: true
+
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          java-version: '25'
-          distribution: 'temurin'
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+            java-version: "17"
+            distribution: "zulu"
+            cache: gradle
 
       - name: Build
         run: ./gradlew build
 
       - name: Publish to CurseForge
+        if: steps.properties.outputs.publish_to_curseforge == 'true'
+        uses: gradle/gradle-build-action@v2
         env:
           CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
-        run: ./gradlew curseforge
+        with:
+          arguments: curseforge
 
       - name: Publish to Modrinth
+        if: steps.properties.outputs.publish_to_modrinth == 'true'
+        uses: gradle/gradle-build-action@v2
         env:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
-        run: ./gradlew modrinth
+        with:
+          arguments: modrinth
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
