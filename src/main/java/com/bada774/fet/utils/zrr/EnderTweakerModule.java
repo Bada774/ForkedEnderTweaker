@@ -1,0 +1,26 @@
+package com.bada774.fet.utils.zrr;
+
+import com.bada774.fet.utils.zrr.callbacks.AlloySmelterCallbacks;
+import com.bada774.fet.utils.zrr.callbacks.CombustionGenCallbacks;
+import com.bada774.fet.utils.zrr.callbacks.EnchanterCallbacks;
+import com.bada774.fet.utils.zrr.callbacks.SagMillCallbacks;
+import com.bada774.fet.utils.zrr.callbacks.SliceNSpliceCallbacks;
+import com.bada774.fet.utils.zrr.callbacks.SoulBinderCallbacks;
+import com.bada774.fet.utils.zrr.callbacks.TankCallbacks;
+import com.bada774.fet.utils.zrr.callbacks.VatCallbacks;
+import youyihj.zenrecipereloading.module.PlainModule;
+
+public class EnderTweakerModule extends PlainModule {
+        public EnderTweakerModule() {
+
+                AlloySmelterCallbacks.register(this);
+                CombustionGenCallbacks.register(this);
+                EnchanterCallbacks.register(this);
+                SagMillCallbacks.register(this);
+                SliceNSpliceCallbacks.register(this);
+                SoulBinderCallbacks.register(this);
+                TankCallbacks.register(this);
+                VatCallbacks.register(this);
+        }
+
+}
