@@ -5,6 +5,9 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.bada774.fet.utils.Logging;
 import crazypants.enderio.base.recipe.alloysmelter.AlloyRecipeManager;
 import crazypants.enderio.base.recipe.IManyToOneRecipe;
@@ -14,6 +17,8 @@ public class AlloySmelterRecipes {
 
     private static final Field lookupField;
     private static final Method addRecipeMethod;
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     static {
         try {
@@ -47,7 +52,7 @@ public class AlloySmelterRecipes {
             addRecipeMethod.invoke(null, lookup, recipe);
         } catch (Exception e) {
             Logging.logError("Error adding recipe to new lookup via reflection:\n" + e);
-            e.printStackTrace();
+            LOGGER.error("Error adding recipe to new lookup via reflection: ", e);
         }
     }
 
@@ -64,7 +69,7 @@ public class AlloySmelterRecipes {
 
         } catch (Exception e) {
             Logging.logError("Failed to commit Alloy Smelter changes:\n" + e);
-            e.printStackTrace();
+            LOGGER.error("Failed to commit Alloy Smelter changes: ", e);
         }
     }
 }

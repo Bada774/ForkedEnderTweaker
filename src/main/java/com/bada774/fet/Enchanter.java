@@ -24,14 +24,17 @@ import net.minecraft.item.ItemStack;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
-@ZenClass("mods.enderio.Enchanter")
+@ZenClass(Enchanter.ZEN_CLASS)
 @ZenRegister
 public class Enchanter {
 
-	private final static String MACHINE_NAME = "Enchanter",
-			ITEM_TYPE = "recipe";
+	public final static String
+			MACHINE_NAME = "Enchanter",
+			ITEM_TYPE = "recipe",
 
-	private static final String METHOD_ADD_RECIPE = "addRecipe",
+			ZEN_CLASS = "mods.enderio." + MACHINE_NAME,
+
+			METHOD_ADD_RECIPE = "addRecipe",
 			METHOD_REMOVE_RECIPE = "removeRecipe";
 
 	@ZenMethod

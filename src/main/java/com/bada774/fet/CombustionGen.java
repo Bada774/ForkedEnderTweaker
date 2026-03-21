@@ -16,24 +16,26 @@ import net.minecraftforge.fluids.Fluid;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
-@ZenClass("mods.enderio.CombustionGen")
+@ZenClass(CombustionGen.ZEN_CLASS)
 @ZenRegister
 public class CombustionGen {
 
-	private final static String MACHINE_NAME = "CombustionGen";
+	public final static String
+			MACHINE_NAME = "CombustionGen",
+			FUEL_TYPE = "fuel",
+			COOLANT_TYPE = "coolant",
 
-	private static final String METHOD_ADD_FUEL = "addFuel",
+			ZEN_CLASS = "mods.enderio." + MACHINE_NAME,
+
+			METHOD_ADD_FUEL = "addFuel",
 			METHOD_REMOVE_FUEL = "removeFuel",
 			METHOD_ADD_COOLANT = "addCoolant",
 			METHOD_REMOVE_COOLANT = "removeCoolant";
 
-	private static final String TYPE_FUEL = "fuel",
-			TYPE_COOLANT = "coolant";
-
 	@ZenMethod
 	public static void addFuel(ILiquidStack fuel, int powerPerCycleRF, int totalBurnTime) {
 
-		if (hasErrors(fuel, powerPerCycleRF, totalBurnTime, METHOD_ADD_FUEL, TYPE_FUEL)) {
+		if (hasErrors(fuel, powerPerCycleRF, totalBurnTime, METHOD_ADD_FUEL, FUEL_TYPE)) {
 			return;
 		}
 		CraftTweakerAPI.apply(new AddFuelAction(fuel, powerPerCycleRF, totalBurnTime));
@@ -42,7 +44,7 @@ public class CombustionGen {
 	@ZenMethod
 	public static void removeFuel(ILiquidStack fuel) {
 
-		if (hasErrors(fuel, METHOD_REMOVE_FUEL, TYPE_FUEL)) {
+		if (hasErrors(fuel, METHOD_REMOVE_FUEL, FUEL_TYPE)) {
 			return;
 		}
 		CraftTweakerAPI.apply(new RemoveFuelAction(fuel));
@@ -51,7 +53,7 @@ public class CombustionGen {
 	@ZenMethod
 	public static void addCoolant(ILiquidStack coolant, float degreesCoolingPerMB) {
 
-		if (hasErrors(coolant, degreesCoolingPerMB, METHOD_ADD_COOLANT, TYPE_COOLANT)) {
+		if (hasErrors(coolant, degreesCoolingPerMB, METHOD_ADD_COOLANT, COOLANT_TYPE)) {
 			return;
 		}
 		CraftTweakerAPI.apply(new AddCoolantAction(coolant, degreesCoolingPerMB));
@@ -60,7 +62,7 @@ public class CombustionGen {
 	@ZenMethod
 	public static void removeCoolant(ILiquidStack coolant) {
 
-		if (hasErrors(coolant, METHOD_REMOVE_COOLANT, TYPE_COOLANT)) {
+		if (hasErrors(coolant, METHOD_REMOVE_COOLANT, COOLANT_TYPE)) {
 			return;
 		}
 		CraftTweakerAPI.apply(new RemoveCoolantAction(coolant));
@@ -70,14 +72,19 @@ public class CombustionGen {
 		public final Fluid fluid;
 		public final int powerPerCycleRF;
 		public final int totalBurnTime;
+		public final String fluidName;
 		public final String logName;
 
 		public IFluidFuel addedFuel;
+
+
 
 		AddFuelAction(ILiquidStack fuel, int powerPerCycleRF, int totalBurnTime) {
 			this.fluid = CraftTweakerMC.getLiquidStack(fuel).getFluid();
 			this.powerPerCycleRF = powerPerCycleRF;
 			this.totalBurnTime = totalBurnTime;
+			this.fluidName = fluid.getName();
+
 			this.logName = CraftTweakerMC.getLiquidStack(fuel).getLocalizedName();
 		}
 
@@ -87,53 +94,59 @@ public class CombustionGen {
 
 			if (conflictType != null) {
 				Logging.logValidationError(MACHINE_NAME, METHOD_ADD_FUEL, String.format(
-						"Failed to add %s for: %s\nFluid already registered as a %s!", TYPE_FUEL, logName,
+						"Failed to add %s for: %s\nFluid already registered as a %s!", FUEL_TYPE, logName,
 						conflictType));
 				return;
 			}
 
 			FluidFuelRegister.instance.addFuel(fluid, powerPerCycleRF, totalBurnTime);
 
-			this.addedFuel = CombustionGenRecipes.getFuels().get(logName);
+			this.addedFuel = CombustionGenRecipes.getFuels().get(fluidName);
 
-			Logging.logAddition(MACHINE_NAME, METHOD_ADD_FUEL, TYPE_FUEL, logName);
+			Logging.logAddition(MACHINE_NAME, METHOD_ADD_FUEL, FUEL_TYPE, logName);
 		}
 
 		@Override
 		public String describe() {
-			return String.format("Adding %s %s by %s: %s", MACHINE_NAME, TYPE_FUEL, METHOD_ADD_FUEL, logName);
+			return String.format("Adding %s %s by %s: %s", MACHINE_NAME, FUEL_TYPE, METHOD_ADD_FUEL, logName);
 		}
 	}
 
 	public static class RemoveFuelAction extends LateAction {
+		public final String fluidName;
+
 		public final String logName;
 		public IFluidFuel backupFuel;
 
 		RemoveFuelAction(ILiquidStack fuel) {
+			this.fluidName = CraftTweakerMC.getLiquidStack(fuel).getFluid().getName();
+
 			this.logName = CraftTweakerMC.getLiquidStack(fuel).getLocalizedName();
 		}
 
 		@Override
 		public void execute() {
 			Map<String, IFluidFuel> fuels = CombustionGenRecipes.getFuels();
-			this.backupFuel = fuels.remove(logName);
+			this.backupFuel = fuels.remove(fluidName);
 
 			if (this.backupFuel != null) {
-				Logging.logRemoval(MACHINE_NAME, METHOD_REMOVE_FUEL, TYPE_FUEL, logName, null);
+				Logging.logRemoval(MACHINE_NAME, METHOD_REMOVE_FUEL, FUEL_TYPE, logName, null);
 			} else
-				Logging.logRemoval(MACHINE_NAME, METHOD_REMOVE_FUEL, TYPE_FUEL, null, logName);
+				Logging.logRemoval(MACHINE_NAME, METHOD_REMOVE_FUEL, FUEL_TYPE, null, logName);
 
 		}
 
 		@Override
 		public String describe() {
-			return String.format("Removing %s %s by %s: %s", MACHINE_NAME, TYPE_FUEL, METHOD_REMOVE_FUEL, logName);
+			return String.format("Removing %s %s by %s: %s", MACHINE_NAME, FUEL_TYPE, METHOD_REMOVE_FUEL, logName);
 		}
 	}
 
 	public static class AddCoolantAction extends LateAction {
 		public final Fluid fluid;
 		public final float degreesCoolingPerMB;
+		public final String fluidName;
+
 		public final String logName;
 
 		public IFluidCoolant addedCoolant;
@@ -141,6 +154,8 @@ public class CombustionGen {
 		AddCoolantAction(ILiquidStack coolant, float degreesCoolingPerMB) {
 			this.fluid = CraftTweakerMC.getLiquidStack(coolant).getFluid();
 			this.degreesCoolingPerMB = degreesCoolingPerMB;
+			this.fluidName = CraftTweakerMC.getLiquidStack(coolant).getFluid().getName();
+
 			this.logName = CraftTweakerMC.getLiquidStack(coolant).getLocalizedName();
 		}
 
@@ -149,47 +164,51 @@ public class CombustionGen {
 			String conflictType = checkConflict(fluid);
 			if (conflictType != null) {
 				Logging.logValidationError(MACHINE_NAME, METHOD_ADD_COOLANT, String.format(
-						"Failed to add %s for: %s\nFluid already registered as a %s!", TYPE_COOLANT, logName,
+						"Failed to add %s for: %s\nFluid already registered as a %s!", COOLANT_TYPE, logName,
 						conflictType));
 				return;
 			}
 
 			FluidFuelRegister.instance.addCoolant(fluid, degreesCoolingPerMB);
 
-			this.addedCoolant = CombustionGenRecipes.getCoolants().get(logName);
+			this.addedCoolant = CombustionGenRecipes.getCoolants().get(fluidName);
 
-			Logging.logAddition(MACHINE_NAME, METHOD_ADD_COOLANT, TYPE_COOLANT, logName);
+			Logging.logAddition(MACHINE_NAME, METHOD_ADD_COOLANT, COOLANT_TYPE, logName);
 		}
 
 		@Override
 		public String describe() {
-			return String.format("Adding %s %s by %s: %s", MACHINE_NAME, TYPE_COOLANT, METHOD_ADD_COOLANT, logName);
+			return String.format("Adding %s %s by %s: %s", MACHINE_NAME, COOLANT_TYPE, METHOD_ADD_COOLANT, logName);
 		}
 	}
 
 	public static class RemoveCoolantAction extends LateAction {
+		public final String fluidName;
+
 		public final String logName;
 		public IFluidCoolant backupCoolant;
 
 		RemoveCoolantAction(ILiquidStack coolant) {
+			this.fluidName = CraftTweakerMC.getLiquidStack(coolant).getFluid().getName();
+
 			this.logName = CraftTweakerMC.getLiquidStack(coolant).getLocalizedName();
 		}
 
 		@Override
 		public void execute() {
 			Map<String, IFluidCoolant> coolants = CombustionGenRecipes.getCoolants();
-			this.backupCoolant = coolants.remove(logName);
+			this.backupCoolant = coolants.remove(fluidName);
 
 			if (this.backupCoolant != null) {
-				Logging.logRemoval(MACHINE_NAME, METHOD_REMOVE_COOLANT, TYPE_COOLANT, logName, null);
+				Logging.logRemoval(MACHINE_NAME, METHOD_REMOVE_COOLANT, COOLANT_TYPE, logName, null);
 			} else {
-				Logging.logRemoval(MACHINE_NAME, METHOD_REMOVE_COOLANT, TYPE_COOLANT, null, logName);
+				Logging.logRemoval(MACHINE_NAME, METHOD_REMOVE_COOLANT, COOLANT_TYPE, null, logName);
 			}
 		}
 
 		@Override
 		public String describe() {
-			return String.format("Removing %s %s by %s: %s", MACHINE_NAME, TYPE_COOLANT, METHOD_REMOVE_COOLANT,
+			return String.format("Removing %s %s by %s: %s", MACHINE_NAME, COOLANT_TYPE, METHOD_REMOVE_COOLANT,
 					logName);
 		}
 	}
@@ -225,9 +244,9 @@ public class CombustionGen {
 
 	private static String checkConflict(Fluid fluid) {
 		if (FluidFuelRegister.instance.getFuel(fluid) != null)
-			return TYPE_FUEL;
+			return FUEL_TYPE;
 		if (FluidFuelRegister.instance.getCoolant(fluid) != null)
-			return TYPE_COOLANT;
+			return COOLANT_TYPE;
 		return null;
 	}
 

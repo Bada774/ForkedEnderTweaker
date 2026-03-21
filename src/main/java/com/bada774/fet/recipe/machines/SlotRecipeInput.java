@@ -4,6 +4,8 @@ import crazypants.enderio.base.recipe.IRecipeInput;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
+import javax.annotation.Nonnull;
+
 public class SlotRecipeInput implements IRecipeInput {
     private final IRecipeInput base;
     private final int slot;
@@ -19,6 +21,7 @@ public class SlotRecipeInput implements IRecipeInput {
     }
 
     @Override
+    @Nonnull
     public IRecipeInput copy() {
         return new SlotRecipeInput(base.copy(), slot);
     }
@@ -29,6 +32,7 @@ public class SlotRecipeInput implements IRecipeInput {
     }
 
     @Override
+    @Nonnull
     public ItemStack getInput() {
         return base.getInput();
     }
@@ -39,7 +43,7 @@ public class SlotRecipeInput implements IRecipeInput {
     }
 
     @Override
-    public boolean isInput(ItemStack test) {
+    public boolean isInput(@Nonnull ItemStack test) {
         return base.isInput(test);
     }
 

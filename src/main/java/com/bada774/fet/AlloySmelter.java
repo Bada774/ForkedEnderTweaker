@@ -27,14 +27,17 @@ import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
-@ZenClass("mods.enderio.AlloySmelter")
+@ZenClass(AlloySmelter.ZEN_CLASS)
 @ZenRegister
 public class AlloySmelter {
 
-	private final static String MACHINE_NAME = "AlloySmelter",
-			ITEM_TYPE = "recipe";
+	public static final String
+			MACHINE_NAME = "AlloySmelter",
+			ITEM_TYPE = "recipe",
 
-	private static final String METHOD_ADD_RECIPE = "addRecipe",
+			ZEN_CLASS = "mods.enderio." + MACHINE_NAME,
+
+			METHOD_ADD_RECIPE = "addRecipe",
 			METHOD_REMOVE_RECIPE = "removeRecipe",
 			METHOD_REMOVE_BY_INPUTS = "removeByInputs";
 

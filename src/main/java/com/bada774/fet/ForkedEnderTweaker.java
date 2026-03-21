@@ -11,19 +11,26 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 @Mod(modid = Tags.MODID, name = Tags.MODNAME, version = Tags.VERSION, dependencies = "required:enderio@[5.3.67,);required-after:crafttweaker;after:zenrecipereloading")
-public class EnderTweaker {
+public class ForkedEnderTweaker {
+
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	public static final List<Runnable> LATE_QUEUE = new ArrayList<>();
 	public static boolean LOAD_COMPLETE = false;
 
+
+
 	@EventHandler
-	public void preinit(FMLPreInitializationEvent e) {
+	public void preInit(FMLPreInitializationEvent e) {
 		if (Loader.isModLoaded("zenrecipereloading")) {
 			try {
 				ZRRIntegration.register();
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				LOGGER.error("Failed to register ZenRecipeReload module.", ex);
 			}
 		}
 	}
@@ -37,8 +44,8 @@ public class EnderTweaker {
 			try {
 				r.run();
 			} catch (Exception ex) {
-				Logging.logError("EnderTweaker: Error executing queued action during PostInit");
-				ex.printStackTrace();
+				Logging.logError("FET: Error executing queued action during PostInit. Check logs for further info.");
+				LOGGER.error("Error executing queued action during PostInit:", ex);
 			}
 		}
 		LATE_QUEUE.clear();

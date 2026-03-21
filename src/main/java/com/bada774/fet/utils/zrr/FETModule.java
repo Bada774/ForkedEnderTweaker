@@ -10,8 +10,8 @@ import com.bada774.fet.utils.zrr.callbacks.TankCallbacks;
 import com.bada774.fet.utils.zrr.callbacks.VatCallbacks;
 import youyihj.zenrecipereloading.module.PlainModule;
 
-public class EnderTweakerModule extends PlainModule {
-        public EnderTweakerModule() {
+public class FETModule extends PlainModule {
+        public FETModule() {
 
                 AlloySmelterCallbacks.register(this);
                 CombustionGenCallbacks.register(this);

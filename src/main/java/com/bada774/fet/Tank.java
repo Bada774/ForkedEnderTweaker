@@ -29,14 +29,16 @@ import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
-@ZenClass("mods.enderio.Tank")
+@ZenClass(Tank.ZEN_CLASS)
 @ZenRegister
 public class Tank {
 
-	private static final String MACHINE_NAME = "Tank",
-			ITEM_TYPE = "recipe";
+	public static final String MACHINE_NAME = "Tank",
+			ITEM_TYPE = "recipe",
 
-	private static final String METHOD_ADD_RECIPE = "addRecipe",
+			ZEN_CLASS = "mods.enderio." + MACHINE_NAME,
+
+			METHOD_ADD_RECIPE = "addRecipe",
 			METHOD_REMOVE_RECIPE = "removeRecipe";
 
 	@ZenMethod

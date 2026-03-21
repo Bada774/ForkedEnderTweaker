@@ -28,13 +28,17 @@ import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
-@ZenClass("mods.enderio.SliceNSplice")
+@ZenClass(SliceNSplice.ZEN_CLASS)
 @ZenRegister
 public class SliceNSplice {
-	private final static String MACHINE_NAME = "SliceNSplice",
-			ITEM_TYPE = "recipe";
 
-	private static final String METHOD_ADD_RECIPE = "addRecipe",
+	public final static String
+			MACHINE_NAME = "SliceNSplice",
+			ITEM_TYPE = "recipe",
+
+			ZEN_CLASS = "mods.enderio." + MACHINE_NAME,
+
+			METHOD_ADD_RECIPE = "addRecipe",
 			METHOD_REMOVE_RECIPE = "removeRecipe";
 
 	@ZenMethod

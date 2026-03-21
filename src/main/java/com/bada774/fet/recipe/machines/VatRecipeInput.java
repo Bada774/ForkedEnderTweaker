@@ -7,6 +7,8 @@ import crazypants.enderio.base.recipe.RecipeInput;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
+import javax.annotation.Nonnull;
+
 public class VatRecipeInput extends RecipeInput {
 
 	private final IIngredient ingredient;
@@ -35,13 +37,14 @@ public class VatRecipeInput extends RecipeInput {
 	}
 
 	@Override
+	@Nonnull
 	public RecipeInput copy() {
 		return new VatRecipeInput(this.ingredient, this.getSlotNumber(), this.getMulitplier());
 	}
 
 	@Override
-	public boolean isInput(ItemStack test) {
-		if (test == null || test.isEmpty()) {
+	public boolean isInput(@Nonnull ItemStack test) {
+		if (test.isEmpty()) {
 			return false;
 		}
 		return ingredient.matches(CraftTweakerMC.getIItemStack(test));
@@ -53,6 +56,7 @@ public class VatRecipeInput extends RecipeInput {
 	}
 
 	@Override
+	@Nonnull
 	public ItemStack getInput() {
 		return getItemStack(ingredient);
 	}

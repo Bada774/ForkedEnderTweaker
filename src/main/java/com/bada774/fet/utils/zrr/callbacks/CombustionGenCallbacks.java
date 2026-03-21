@@ -22,8 +22,8 @@ public class CombustionGenCallbacks {
         @Override
         public void undo() {
             if (action.addedFuel != null &&
-                    CombustionGenRecipes.getFuels().get(action.logName) == action.addedFuel) {
-                CombustionGenRecipes.getFuels().remove(action.logName);
+                    CombustionGenRecipes.getFuels().get(action.fluidName) == action.addedFuel) {
+                CombustionGenRecipes.getFuels().remove(action.fluidName);
             }
         }
 
@@ -41,7 +41,7 @@ public class CombustionGenCallbacks {
         @Override
         public void undo() {
             if (action.backupFuel != null) {
-                CombustionGenRecipes.getFuels().put(action.logName, action.backupFuel);
+                CombustionGenRecipes.getFuels().put(action.fluidName, action.backupFuel);
             }
         }
 
@@ -59,8 +59,8 @@ public class CombustionGenCallbacks {
         @Override
         public void undo() {
             if (action.addedCoolant != null
-                    && CombustionGenRecipes.getCoolants().get(action.logName) == action.addedCoolant) {
-                CombustionGenRecipes.getCoolants().remove(action.logName);
+                    && CombustionGenRecipes.getCoolants().get(action.fluidName) == action.addedCoolant) {
+                CombustionGenRecipes.getCoolants().remove(action.fluidName);
             }
         }
 
@@ -78,7 +78,7 @@ public class CombustionGenCallbacks {
         @Override
         public void undo() {
             if (action.backupCoolant != null) {
-                CombustionGenRecipes.getCoolants().put(action.logName, action.backupCoolant);
+                CombustionGenRecipes.getCoolants().put(action.fluidName, action.backupCoolant);
             }
         }
 

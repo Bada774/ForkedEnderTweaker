@@ -1,6 +1,7 @@
 package com.bada774.fet.utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.enderio.core.common.util.NNList;
@@ -43,9 +44,7 @@ public class RecipeUtils {
 
 	public static NNList<IRecipeInput> toEIOInputsNN(IRecipeInput[] inputs) {
 		NNList<IRecipeInput> ret = new NNList<>();
-		for (IRecipeInput input : inputs) {
-			ret.add(input);
-		}
+        Collections.addAll(ret, inputs);
 		return ret;
 	}
 
