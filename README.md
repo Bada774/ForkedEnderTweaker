@@ -749,6 +749,6 @@ Contributions are welcome! If you've found a bug, or want to improve existing fu
 
 **To set up the dev environment:**
 1. Clone the repo
-2. Make sure `JAVA_HOME` points to JDK 17 or newer (JDK 8 is used for compilation automatically via Gradle toolchains)
+2. Make sure `JAVA_HOME` points to JDK 25 or newer (JDK 8 is used for compilation automatically via Gradle toolchains)
 3. Run `./gradlew runClient` — Gradle will download all required dependencies on first launch
 
