@@ -1,3 +1,6 @@
+## 2.1.1
+- Most of the machines now supports `null` as input value for GUI support
+
 ## 2.0.3
 - Fixed Combustion Generator recipes could not be removed (and therefore the addition could not be canceled)
 - Changes for future FET-GUI accessibility
