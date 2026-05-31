@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.enderio.core.common.util.NNList;
 
-import com.bada774.fet.recipe.RecipeInput;
+import com.enderio.core.common.util.stackable.Things;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.item.WeightedItemStack;
@@ -14,7 +14,9 @@ import crafttweaker.api.liquid.ILiquidStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import crazypants.enderio.base.recipe.IRecipeInput;
 import crazypants.enderio.base.recipe.RecipeOutput;
+import crazypants.enderio.base.recipe.ThingsRecipeInput;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -64,8 +66,23 @@ public class RecipeUtils {
 		return ret;
 	}
 
-	public static RecipeInput toInput(IIngredient ing) {
-		return new RecipeInput(CraftTweakerMC.getIngredient(ing));
+	public static IRecipeInput toInput(IIngredient ing) {
+		return new ThingsRecipeInput(ingredientToThings(CraftTweakerMC.getIngredient(ing)));
+	}
+
+	public static Things ingredientToThings(Ingredient ing) {
+		Things things = new Things();
+		for (ItemStack stack : ing.getMatchingStacks()) {
+			if (!stack.isEmpty()) {
+				things.add(stack.copy());
+			}
+		}
+		return things;
+	}
+
+	public static ItemStack thingsToStack(Things things) {
+		if (things == null) return ItemStack.EMPTY;
+		return new ThingsRecipeInput(things).getInput();
 	}
 
 	public static String getDisplayString(IIngredient... ings) {

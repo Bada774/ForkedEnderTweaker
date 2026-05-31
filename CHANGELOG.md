@@ -1,5 +1,6 @@
 ## 2.1.1
-- Most of the machines now supports `null` as input value for GUI support
+- Registered machines recipes now can be dumped using the `/fet dump [machineName|all]` command
+- Fixed a bug when adding custom recipes would not work in modpacks with compatibility mods (e.g. '[JAOPCA](https://www.curseforge.com/minecraft/mc-mods/jaopca)')
 
 ## 2.0.3
 - Fixed Combustion Generator recipes could not be removed (and therefore the addition could not be canceled)
