@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 import com.google.common.base.Strings;
 
-import com.bada774.fet.recipe.RecipeInput;
 import com.bada774.fet.recipe.machines.SagMillRecipe;
 import com.bada774.fet.utils.LateAction;
 import com.bada774.fet.utils.Logging;
@@ -16,11 +15,7 @@ import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.item.WeightedItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
-import crazypants.enderio.base.recipe.IRecipe;
-import crazypants.enderio.base.recipe.Recipe;
-import crazypants.enderio.base.recipe.RecipeBonusType;
-import crazypants.enderio.base.recipe.RecipeLevel;
-import crazypants.enderio.base.recipe.RecipeOutput;
+import crazypants.enderio.base.recipe.*;
 import crazypants.enderio.base.recipe.sagmill.SagMillRecipeManager;
 import net.minecraft.item.ItemStack;
 import stanhebben.zenscript.annotations.Optional;
@@ -94,7 +89,7 @@ public class SagMill {
 
 	public static class AddRecipeAction extends LateAction {
 		public final RecipeOutput[] output;
-		public final RecipeInput eioInput;
+		public final IRecipeInput eioInput;
 		public final int energyCost;
 		public final RecipeBonusType bonusType;
 		public final String logName;
@@ -103,7 +98,7 @@ public class SagMill {
 
 		public AddRecipeAction(IItemStack[] output, float[] chances, IIngredient input, String bonusType,
 				int energyCost, float[] xp) {
-			this.eioInput = new RecipeInput(CraftTweakerMC.getIngredient(input));
+			this.eioInput = RecipeUtils.toInput(input);
 			this.energyCost = energyCost <= 0 ? 5000 : energyCost;
 			this.output = RecipeUtils.toEIOOutputs(output, chances, xp);
 			this.bonusType = RecipeBonusType.valueOf(Strings.isNullOrEmpty(bonusType) ? "NONE" : bonusType);
@@ -165,7 +160,7 @@ public class SagMill {
 
 		@Override
 		public String describe() {
-			return String.format("Removing %s %s by %s for: %s", MACHINE_NAME, METHOD_REMOVE_RECIPE, ITEM_TYPE,
+			return String.format("Removing %s %s by %s for: %s", MACHINE_NAME, ITEM_TYPE, METHOD_REMOVE_RECIPE,
 					logName);
 		}
 	}
