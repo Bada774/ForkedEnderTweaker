@@ -218,7 +218,7 @@ public class AlloySmelter {
 			List<IItemStack[]> validInputs = new ArrayList<>();
 
 			for (IItemStack[] filterInput : inputs) {
-				if (ValidationUtils.isAllNullOrEmpty(filterInput) || filterInput.length > 3) {
+				if (ValidationUtils.isInvalid(filterInput) || filterInput.length > 3) {
 					Logging.logValidationError(MACHINE_NAME, METHOD_REMOVE_BY_INPUTS,
 							String.format("Invalid %s inputs, must be between 1 and 3 inputs", ITEM_TYPE));
 					continue;
@@ -322,8 +322,8 @@ public class AlloySmelter {
 	}
 
 	private static boolean hasErrors(IItemStack[] array, String methodName) {
-		if (ValidationUtils.isAllNullOrEmpty(array)) {
-			Logging.logValidationError(MACHINE_NAME, methodName, "No items provided - at least one slot must be filled");
+		if (ValidationUtils.isInvalid(array)) {
+			Logging.logValidationError(MACHINE_NAME, methodName, "No items provided or array contains empty items");
 			return true;
 		}
 		return false;

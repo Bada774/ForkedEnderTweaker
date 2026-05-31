@@ -27,15 +27,6 @@ public class ValidationUtils {
         return false;
     }
 
-    public static boolean isAllNullOrEmpty(IItemStack[] array) {
-        if (array == null)
-            return true;
-        for (IItemStack item : array) {
-            if (!isInvalid(item)) return false;
-        }
-        return true;
-    }
-
     public static boolean isInvalid(float[] array) {
         return array == null || array.length == 0;
     }
