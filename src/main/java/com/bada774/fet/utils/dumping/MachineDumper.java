@@ -69,8 +69,9 @@ public class MachineDumper {
                     .map(MachineDumper::inputLine)
                     .collect(Collectors.joining(", "));
 
-                LOGGER.info("[FET_DUMP_ALLOY] inLookup={} | {} -> {} | energy={}",
-                    inLookup, inputs, stackInfo(recipe.getOutput()), recipe.getEnergyRequired());
+                LOGGER.info("[FET_DUMP_ALLOY] synthetic={} dedupe={} | {} -> {} | energy={}",
+                        recipe.isSynthetic(), recipe.isDedupeInput(), inputs,
+                        stackInfo(recipe.getOutput()), recipe.getEnergyRequired());
             }
         } catch (Exception e) {
             LOGGER.error("[FET_DUMP_ALLOY] Failed to dump AlloySmelter recipes", e);

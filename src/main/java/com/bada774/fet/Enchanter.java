@@ -2,7 +2,7 @@ package com.bada774.fet;
 
 import java.util.Map;
 
-import com.enderio.core.common.util.NNList;
+import com.bada774.fet.utils.RecipeUtils;
 import com.enderio.core.common.util.stackable.Things;
 
 import com.bada774.fet.recipe.machines.EnchanterRecipes;
@@ -105,7 +105,7 @@ public class Enchanter {
 		@Override
 		public void execute() {
 
-			Things thing = new Things().add(new NNList<>(CraftTweakerMC.getIngredient(input).getMatchingStacks()));
+			Things thing = RecipeUtils.buildThings(input);
 
 			if (thing.isEmpty()) {
 				Logging.logValidationError(MACHINE_NAME, METHOD_ADD_RECIPE,

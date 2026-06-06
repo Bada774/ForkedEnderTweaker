@@ -155,7 +155,7 @@ public class Tank {
 				return;
 			}
 
-			Things inThing = new Things().add(new NNList<>(CraftTweakerMC.getIngredient(input).getMatchingStacks()));
+			Things inThing = RecipeUtils.buildThings(input);
 			Things outThing = new Things();
 			if (!this.output.isEmpty()) {
 				outThing.add(this.output);

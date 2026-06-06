@@ -61,7 +61,9 @@ public class SliceNSplice {
 
 	public static class AddRecipeAction extends LateAction {
 		public final ItemStack output;
-		public final NNList<IRecipeInput> inputs;
+		// See why inputs are raw CT now in AlloySmelter.
+		public final IIngredient[] ctInputs;
+		public NNList<IRecipeInput> inputs;
 		public final int energyCost;
 		public final float xp;
 		public final String logName;
@@ -74,15 +76,7 @@ public class SliceNSplice {
 			this.xp = xp;
 			this.logName = output.getDisplayName();
 
-			this.inputs = new NNList<>();
-			for (int i = 0; i < inputs.length; i++) {
-				if (inputs[i] != null) {
-					IRecipeInput converted = RecipeUtils.toEIOInput(inputs[i]);
-					if (converted != null) {
-						this.inputs.add(new SlotRecipeInput(converted, i));
-					}
-				}
-			}
+			this.ctInputs = inputs;
 		}
 
 		private String checkConflict(ManyToOneRecipe newRecipe) {
@@ -121,6 +115,17 @@ public class SliceNSplice {
 
 		@Override
 		public void execute() {
+			// See the explanation on why inputs resolving here in AlloySmelter's execute().
+			this.inputs = new NNList<>();
+			for (int i = 0; i < ctInputs.length; i++) {
+				if (ctInputs[i] != null) {
+					IRecipeInput converted = RecipeUtils.toEIOInput(ctInputs[i]);
+					if (converted != null) {
+						this.inputs.add(new SlotRecipeInput(converted, i));
+					}
+				}
+			}
+
 			RecipeOutput out = new RecipeOutput(output, 1, xp);
 			ManyToOneRecipe newRecipe = new ManyToOneRecipe(out, energyCost, RecipeBonusType.NONE, RecipeLevel.IGNORE,
 					inputs);
