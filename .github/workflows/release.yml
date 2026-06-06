@@ -48,10 +48,16 @@ jobs:
         with:
           arguments: modrinth
 
+      - name: Get Changelog Entry
+        id: changelog_reader
+        uses: mindwerks/changelog-reader-action@v2
+        with:
+          path: ./CHANGELOG.md
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             build/libs/*.jar
-          body_path: CHANGELOG.md
+          body_path: ${{ steps.changelog_reader.outputs.changes }}
           token: ${{ secrets.GITHUB_TOKEN }}
