@@ -1,3 +1,6 @@
+## 2.1.2
+- Hot-fix the adding recipes problems from the previous path (ignoring item quantities, wrong items showing at JEI)
+
 ## 2.1.1
 - Registered machines recipes now can be dumped using the `/fet dump [machineName|all]` command
 - Fixed a bug when adding custom recipes would not work in modpacks with compatibility mods (e.g. '[JAOPCA](https://www.curseforge.com/minecraft/mc-mods/jaopca)')

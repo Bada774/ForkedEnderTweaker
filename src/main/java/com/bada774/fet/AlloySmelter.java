@@ -23,6 +23,8 @@ import crazypants.enderio.base.recipe.alloysmelter.AlloyRecipeManager;
 import crazypants.enderio.base.recipe.lookup.TriItemLookup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
@@ -30,6 +32,8 @@ import stanhebben.zenscript.annotations.ZenMethod;
 @ZenClass(AlloySmelter.ZEN_CLASS)
 @ZenRegister
 public class AlloySmelter {
+
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	public static final String
 			MACHINE_NAME = "AlloySmelter",
@@ -72,7 +76,10 @@ public class AlloySmelter {
 
 	public static class AddRecipeAction extends LateAction {
 		public final ItemStack output;
-		public final NNList<IRecipeInput> inputs;
+		// Raw CraftTweaker inputs, kept as-is. They're turned into EnderIO inputs in execute() from now,
+		// not in the constructor (explanation why it was changed see in execute()).
+		public final IIngredient[] ctInputs;
+		public NNList<IRecipeInput> inputs;
 		public final int energyCost;
 		public final float xp;
 		public final String logName;
@@ -81,7 +88,7 @@ public class AlloySmelter {
 
 		AddRecipeAction(IItemStack output, IIngredient[] ctInputs, int energyCost, float xp) {
 			this.output = CraftTweakerMC.getItemStack(output);
-			this.inputs = RecipeUtils.toEIOInputsNN(ctInputs);
+			this.ctInputs = ctInputs;
 			this.energyCost = energyCost <= 0 ? 5000 : energyCost;
 			this.xp = xp;
 			this.logName = output.getDisplayName();
@@ -92,10 +99,15 @@ public class AlloySmelter {
 				return null;
 
 			for (IManyToOneRecipe recipe : AlloySmelterRecipes.getAlloyRecipes()) {
-				if (recipe != null
-						&& RecipeUtils.areInputsMatch(RecipeUtils.toEIOInputsNN(recipe.getInputs()), inputs)) {
+				try {
+					if (recipe != null
+							&& RecipeUtils.areInputsMatch(RecipeUtils.toEIOInputsNN(recipe.getInputs()), inputs)) {
 
-					return RecipeUtils.getConflictingOutputName(recipe.getOutput());
+						return RecipeUtils.getConflictingOutputName(recipe.getOutput());
+					}
+				} catch (Exception e) {
+					// A foreign recipe's inputs may not be fully baked yet. Don't abort recipes.
+					LOGGER.debug("[FET] AlloySmelter conflict scan skipped a recipe", e);
 				}
 			}
 			return null;
@@ -103,6 +115,11 @@ public class AlloySmelter {
 
 		@Override
 		public void execute() {
+			// Resolve the inputs here, at drain time. Doing it in the constructor (when CraftTweaker first
+			// parses the script) runs before EnderCore bakes its Things, and the inputs come out empty -
+			// recipe never makes it into the machine on the startup, only after `/ct reload`.
+			this.inputs = RecipeUtils.toEIOInputsNN(ctInputs);
+
 			String conflictingName = checkConflict();
 
 			if (conflictingName != null) {
