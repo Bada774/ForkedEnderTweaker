@@ -6,15 +6,19 @@ import java.util.List;
 
 import com.enderio.core.common.util.NNList;
 
-import com.bada774.fet.recipe.RecipeInput;
+import com.enderio.core.common.util.stackable.Things;
 import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.item.WeightedItemStack;
 import crafttweaker.api.liquid.ILiquidStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
+import crafttweaker.api.oredict.IOreDictEntry;
 import crazypants.enderio.base.recipe.IRecipeInput;
+import crazypants.enderio.base.recipe.RecipeInput;
 import crazypants.enderio.base.recipe.RecipeOutput;
+import crazypants.enderio.base.recipe.ThingsRecipeInput;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -64,9 +68,85 @@ public class RecipeUtils {
 		return ret;
 	}
 
-	public static RecipeInput toInput(IIngredient ing) {
-		return new RecipeInput(CraftTweakerMC.getIngredient(ing));
-	}
+    public static IRecipeInput toInput(IIngredient ing) {
+        if (ing == null)
+            return null;
+
+		// NBT-sensitive items have to bypass Things. .withTag({..})
+		// routed through a Things would (a) match the tag-less item in-world and (b) collapse onto
+		// any other tag variant of the same item - the false-duplicate
+		if (ing instanceof IItemStack) {
+			ItemStack stack = CraftTweakerMC.getItemStack((IItemStack) ing);
+			if (stack != null && !stack.isEmpty() && stack.hasTagCompound()) {
+				// useMeta=false only when the stack is a meta wildcard, so a wildcard+NBT
+				// ingredient still matches any sub-type while keeping the tag check.
+				boolean useMeta = stack.getItemDamage() != OreDictionary.WILDCARD_VALUE;
+				return new RecipeInput(stack, useMeta);
+			}
+		}
+
+        int count = ing.getAmount() > 0 ? ing.getAmount() : 1;
+        return new ThingsRecipeInput(buildThings(ing)).setCount(count);
+    }
+
+    public static Things buildThings(IIngredient ing) {
+        Things things = new Things();
+        addIngredient(things, ing);
+        return things;
+    }
+
+    private static void addIngredient(Things things, IIngredient ing) {
+        if (ing == null)
+            return;
+
+        if (ing instanceof IOreDictEntry) {
+            things.addOredict(((IOreDictEntry) ing).getName());
+            return;
+        }
+
+        if (ing instanceof IItemStack) {
+            addStack(things, (IItemStack) ing);
+            return;
+        }
+
+        List<IItemStack> items = ing.getItems();
+        if (items != null) {
+            for (IItemStack item : items) {
+                addStack(things, item);
+            }
+        }
+    }
+
+    private static void addStack(Things things, IItemStack ctStack) {
+        if (ctStack == null)
+            return;
+        ItemStack stack = CraftTweakerMC.getItemStack(ctStack);
+        if (stack == null || stack.isEmpty())
+            return;
+
+        ResourceLocation rl = stack.getItem().getRegistryName();
+        if (rl == null)
+            return;
+
+        int meta = stack.getItemDamage();
+
+        // IMPORTANT: add to the Things by NAME (a StringThing), NOT via things.add(ItemStack) - stack loses it's meta.
+        // For sub-typed items the ItemStackThing path makes Things.getItemStack() (JEI) - collapse to sub-item 0, even though
+        // getItemStacksRaw() (machines recipes list) keeps the real meta. Building the StringThing
+        // "modid:item:meta" keeps BOTH paths on the exact sub-item, so JEI shows the right item and
+        // the machine still matches it.
+
+        if (meta == OreDictionary.WILDCARD_VALUE) {
+            things.add(rl.toString());
+        } else {
+            things.add(rl.toString() + ":" + meta);
+        }
+    }
+
+    public static ItemStack thingsToStack(Things things) {
+        if (things == null) return ItemStack.EMPTY;
+        return new ThingsRecipeInput(things).getInput();
+    }
 
 	public static String getDisplayString(IIngredient... ings) {
 		if (ings == null)

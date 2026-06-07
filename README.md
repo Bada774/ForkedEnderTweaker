@@ -741,6 +741,18 @@ Tank.removeRecipe(false, <minecraft:experience_bottle>);
 
 </details>
 
+<details>
+
+<summary><b id="dumping">Dumping</b></summary>
+
+You can dump all registered recipes from machines using `/fet dump` command. You can specify the machine from which you want to dump the recipes as a parameter.
+
+Parameters: `[all|alloy|combustion|enchanter|sagmill|slice|soul|tank|vat]`
+
+All recipes will be written to the `latest.log` file.
+
+</details>
+
 ---
 
 ## 🤝 Contributing
