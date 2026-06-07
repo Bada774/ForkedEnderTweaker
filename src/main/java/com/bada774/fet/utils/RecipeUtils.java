@@ -14,6 +14,7 @@ import crafttweaker.api.liquid.ILiquidStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import crafttweaker.api.oredict.IOreDictEntry;
 import crazypants.enderio.base.recipe.IRecipeInput;
+import crazypants.enderio.base.recipe.RecipeInput;
 import crazypants.enderio.base.recipe.RecipeOutput;
 import crazypants.enderio.base.recipe.ThingsRecipeInput;
 import net.minecraft.item.ItemStack;
@@ -70,6 +71,19 @@ public class RecipeUtils {
     public static IRecipeInput toInput(IIngredient ing) {
         if (ing == null)
             return null;
+
+		// NBT-sensitive items have to bypass Things. .withTag({..})
+		// routed through a Things would (a) match the tag-less item in-world and (b) collapse onto
+		// any other tag variant of the same item - the false-duplicate
+		if (ing instanceof IItemStack) {
+			ItemStack stack = CraftTweakerMC.getItemStack((IItemStack) ing);
+			if (stack != null && !stack.isEmpty() && stack.hasTagCompound()) {
+				// useMeta=false only when the stack is a meta wildcard, so a wildcard+NBT
+				// ingredient still matches any sub-type while keeping the tag check.
+				boolean useMeta = stack.getItemDamage() != OreDictionary.WILDCARD_VALUE;
+				return new RecipeInput(stack, useMeta);
+			}
+		}
 
         int count = ing.getAmount() > 0 ? ing.getAmount() : 1;
         return new ThingsRecipeInput(buildThings(ing)).setCount(count);

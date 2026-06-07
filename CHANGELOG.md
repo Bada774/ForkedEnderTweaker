@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [2.1.3]
+- Fixed a bug where inputs with NBT tags were ignored, which could result in recipes being treated as duplicates.
+
 ## [2.1.2]
 - Hot-fix the adding recipes problems from the previous path (ignoring item quantities, wrong items showing at JEI)
 
